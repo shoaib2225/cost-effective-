@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Information | Pharmacy Precision</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+    <!-- Main Style -->
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .info-section {
+            padding: 15rem 0 10rem;
+            text-align: center;
+        }
+        .info-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            color: white;
+        }
+        .info-content {
+            max-width: 800px;
+            margin: 0 auto;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            line-height: 1.8;
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid var(--glass-border);
+            border-radius: 2rem;
+            padding: 4rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Navigation -->
+    <header class="main-header">
+        <div class="header-container">
+            <div class="logo"><a href="index.html" style="text-decoration:none; color:inherit;">Clinical<span style="color:#0066ff;">Editorial</span></a></div>
+            <nav class="nav-menu">
+                <a href="analyzer.html">Medicine Analyzer</a>
+                <a href="locator.html">Pharmacy Locator</a>
+            </nav>
+            <div class="header-actions">
+                <div class="search-mini" style="width: 250px;">
+                    <span class="icon" style="cursor: pointer;" onclick="goToAnalyzer()">🤖</span>
+                    <input type="text" id="headerSearch" placeholder="Ask AI Clinical Assistant..." onkeypress="if(event.key === 'Enter') goToAnalyzer()">
+                </div>
+                <button class="icon-btn" onclick="showProfile()">👤</button>
+                <button class="signin-btn" id="authBtn" onclick="toggleAuth()">Sign in</button>
+            </div>
+        </div>
+    </header>
+
+    <section class="info-section container">
+        <h1 class="info-title" id="pageTitle">Information</h1>
+        <div class="info-content">
+            <p id="pageContent">This page is a placeholder mock for the requested document. In a production environment, this would hold the legal text, policies, or detailed consultation interfaces.</p>
+            <br><br>
+            <a href="index.html" style="color: var(--primary-blue); text-decoration: none; font-weight: 800;">← Return to Homepage</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <!-- Kept exactly the same as index, omitting for brevity, but I will put it. -->
+        <div class="container">
+            <div class="footer-cols">
+                <div class="col-brand">
+                    <div class="logo">Clinical<span>Editorial</span></div>
+                    <p class="brand-desc">Optimizing pharmaceutical management through clinical precision and financial transparency. Empowering patients nationwide.</p>
+                </div>
+                <div class="col-links">
+                    <h5>QUICK ACCESS</h5>
+                    <a href="info.html?page=Privacy Policy">Privacy Policy</a>
+                    <a href="info.html?page=Terms of Service">Terms of Service</a>
+                    <a href="contact.html">Contact Us</a>
+                </div>
+                <div class="col-links">
+                    <h5>RESOURCE CENTER</h5>
+                    <a href="info.html?page=Drug Safety">Drug Safety</a>
+                    <a href="info.html?page=Support Desk">Support Desk</a>
+                </div>
+                <div class="col-links">
+                    <h5>CONNECT</h5>
+                    <div class="social-icons">
+                        <a href="https://www.youtube.com" target="_blank" title="YouTube">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+                        </a>
+                        <a href="https://www.facebook.com" target="_blank" title="Facebook">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-2.21c0-.837.38-1.29 1.173-1.29h2.827v-4h-3.327c-3.604 0-5.632 1.954-5.632 5.093v2.407z"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2026 PILL-SAVE EDITORIAL | HIGH-PRECISION PHARMACY SOLUTIONS</p>
+                <div class="legal-badges">
+                    <span>HIPAA COMPLIANT</span> | <span>FDA VERIFIED DATA</span> | <span>SECURE ACCESS</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Content Database for Footer Pages
+        const contentDB = {
+            "Privacy Policy": `
+                <div style="text-align: left;">
+                    <h3 style="color: white; margin-bottom: 1rem;">1. Data Collection</h3>
+                    <p>Clinical Editorial is committed to protecting patient confidentiality. We only collect data necessary for clinical comparison and logistical optimization.</p>
+                    <br>
+                    <h3 style="color: white; margin-bottom: 1rem;">2. Security Standards</h3>
+                    <p>All transmitted medical identifiers and prescription queries are encrypted via AES-256 protocols and stored within HIPAA-compliant infrastructure.</p>
+                    <br>
+                    <h3 style="color: white; margin-bottom: 1rem;">3. User Control</h3>
+                    <p>You may request a full export or deletion of your clinical search history at any time through your Profile dashboard.</p>
+                </div>
+            `,
+            "Terms of Service": `
+                <div style="text-align: left;">
+                    <h3 style="color: white; margin-bottom: 1rem;">1. Services Provided</h3>
+                    <p>The Clinical Editorial platform provides analytical comparisons of pharmaceutical alternatives. We do not prescribe medication.</p>
+                    <br>
+                    <h3 style="color: white; margin-bottom: 1rem;">2. Clinical Accuracy</h3>
+                    <p>While we use FDA-verified data, users should always consult with a licensed healthcare professional before changing medications.</p>
+                </div>
+            `,
+
+            "Drug Safety": `
+                <div style="text-align: left;">
+                    <h3 style="color: white; margin-bottom: 1rem;">Clinical Safety Protocols</h3>
+                    <p>Our database synchronizes daily with national safety bulletins to ensure no recalled or flagged medications are suggested as alternatives.</p>
+                    <br>
+                    <p>We provide allergen and contraindication alerts based on your digital clinical profile.</p>
+                </div>
+            `,
+            "Support Desk": `
+                <div style="text-align: left;">
+                    <h3 style="color: white; margin-bottom: 1rem;">Need Assistance?</h3>
+                    <p>Our clinical support team is available 24/7 to help you navigate data synchronization or logistical queries.</p>
+                    <br>
+                    <p><strong>Email:</strong> support@clinical-editorial.com</p>
+                    <p><strong>Response Time:</strong> < 120 Minutes (Clinical Priority)</p>
+                </div>
+            `
+        };
+
+        // Update page based on URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const pageName = urlParams.get('page');
+        
+        if (pageName && contentDB[pageName]) {
+            document.getElementById('pageTitle').innerText = pageName;
+            document.getElementById('pageContent').innerHTML = contentDB[pageName];
+            document.title = pageName + " | Clinical Precision";
+        } else if (pageName) {
+            document.getElementById('pageTitle').innerText = pageName;
+        }
+    </script>
+</body>
+</html>

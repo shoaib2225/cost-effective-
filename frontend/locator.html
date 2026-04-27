@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clinical Editorial | Integrated Pharmacy Graph</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Leaflet JS & CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Style -->
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .locator-page {
+            padding-top: 140px;
+            background: #00030a;
+            min-height: 100vh;
+        }
+
+        .graph-layer {
+            display: grid;
+            grid-template-columns: 1.6fr 1fr;
+            gap: 2rem;
+            margin-top: 3rem;
+            height: calc(100vh - 420px);
+            min-height: 700px;
+        }
+
+        #map-graph {
+            border-radius: 2rem;
+            border: 1px solid rgba(0, 102, 255, 0.2);
+            box-shadow: 0 40px 100px rgba(0,0,0,0.9);
+            z-index: 10;
+        }
+
+        .clinics-sidebar {
+            background: rgba(15, 23, 42, 0.4);
+            border-radius: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .clinics-sidebar::-webkit-scrollbar { width: 4px; }
+        .clinics-sidebar::-webkit-scrollbar-thumb { background: var(--primary-blue); border-radius: 10px; }
+
+        .pharmacy-node {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--glass-border);
+            border-radius: 1.5rem;
+            padding: 1.8rem;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+
+        .pharmacy-node:hover, .pharmacy-node.active {
+            border-color: #00f2ff;
+            background: rgba(0, 242, 255, 0.08);
+            transform: translateX(10px) scale(1.02);
+        }
+
+        .pharmacy-node h3 { font-family: 'Outfit'; font-size: 1.3rem; color: #fff; margin-bottom: 0.5rem; font-weight: 700; }
+        .pharmacy-node .meta { font-size: 0.85rem; color: #94a3b8; margin-bottom: 1.2rem; display: flex; align-items: center; gap: 8px; }
+        
+        .km-badge {
+            background: linear-gradient(90deg, rgba(0, 102, 255, 0.2), transparent);
+            color: #00f2ff;
+            font-size: 0.7rem;
+            font-weight: 900;
+            padding: 0.4rem 1rem;
+            border-radius: 2rem;
+            border-left: 2px solid #00f2ff;
+            display: inline-block;
+            margin-bottom: 1rem;
+            letter-spacing: 0.1em;
+        }
+
+        .node-actions { display: flex; gap: 1rem; }
+        .btn-nav {
+            flex: 1;
+            background: var(--primary-blue);
+            color: #fff;
+            border: none;
+            padding: 0.8rem;
+            border-radius: 1rem;
+            font-weight: 800;
+            font-size: 0.8rem;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .search-hero {
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .clinical-search-console {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(40px);
+            border: 1px solid rgba(0, 102, 255, 0.3);
+            border-radius: 4rem;
+            padding: 0.8rem 1rem 0.8rem 2.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 2rem;
+            box-shadow: 0 0 50px rgba(0, 102, 255, 0.1);
+        }
+
+        .clinical-search-console input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: 500;
+            outline: none;
+            font-family: 'Plus Jakarta Sans';
+        }
+
+        .btn-sync-grid {
+            background: var(--primary-blue);
+            color: #fff;
+            border: none;
+            padding: 1rem 2.5rem;
+            border-radius: 3.5rem;
+            font-weight: 900;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-sync-grid:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(0, 102, 255, 0.5); }
+
+        .btn-locate-me {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 1rem;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-locate-me:hover { background: rgba(0, 242, 255, 0.2); border-color: #00f2ff; color: #00f2ff; }
+
+        .path-vector { stroke-dasharray: 8; animation: vectorFlow 25s linear infinite; }
+        @keyframes vectorFlow { to { stroke-dashoffset: -500; } }
+
+        .loader-wrap { display: flex; gap: 12px; justify-content: center; padding: 6rem; flex-direction: column; align-items: center; background: rgba(15, 23, 42, 0.2); border-radius: 2rem; margin: 1rem; }
+        .loading-bits { display: flex; gap: 12px; margin-bottom: 1.5rem; }
+        .loading-bit { width: 14px; height: 14px; background: linear-gradient(135deg, var(--primary-blue), var(--accent-cyan)); border-radius: 3px; animation: bitPulse 1s infinite alternate; }
+        .loading-bit:nth-child(2) { animation-delay: 0.2s; }
+        .loading-bit:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes bitPulse { from { opacity: 0.1; transform: scale(0.8) rotate(0deg); } to { opacity: 1; transform: scale(1.3) rotate(90deg); } }
+
+        .leaflet-div-icon { background: transparent; border: none; }
+        .node-marker {
+            width: 24px; height: 24px;
+            background: linear-gradient(135deg, #00f2ff, #0066ff);
+            border: 3px solid #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 25px rgba(0, 242, 255, 0.6);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+        .node-marker:hover { transform: scale(1.4); background: #fff; border-color: #00f2ff; box-shadow: 0 0 40px #00f2ff; }
+
+        .error-msg {
+            color: #ff4b5c;
+            background: rgba(255, 75, 92, 0.1);
+            border: 1px solid rgba(255, 75, 92, 0.2);
+            padding: 2rem;
+            border-radius: 1.5rem;
+            text-align: center;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin: 1rem;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        .radius-selector {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #fff;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            outline: none;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body class="dark-mode">
+
+    <!-- Header -->
+    <header class="main-header">
+        <div class="header-container">
+            <div class="logo"><a href="index.html" style="text-decoration:none; color:inherit;">Clinical<span>Editorial</span></a></div>
+            <nav class="nav-menu">
+                <a href="index.html">Home</a>
+                <a href="analyzer.html">Analyzer</a>
+                <a href="analytics.html">Insights</a>
+                <a href="locator.html" class="active">Locator</a>
+                <a href="expert_consultation.html">Consultation</a>
+            </nav>
+            <div class="header-actions">
+                <button class="signin-btn" onclick="location.href='login.html'">Sign In</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="locator-page">
+        <div class="container search-hero">
+            <div class="badge-blue">LIVE CLINICAL GRID</div>
+            <h1 class="hero-main" style="font-size: 4.5rem; margin-top: 1rem;">Clinical <span class="glow-text">Graph</span></h1>
+            <p class="hero-sub" style="margin: 1.5rem auto; font-size: 1.1rem;">Identifying verified pharmaceutical outlets within the Clinical Editorial network. High-precision geospatial synchronization.</p>
+            
+            <div class="clinical-search-console">
+                <button class="btn-locate-me" onclick="useBrowserLocation()" title="Use My Current Location">
+                    <i class="fas fa-location-crosshairs"></i>
+                </button>
+                <i class="fas fa-city" style="font-size: 1.2rem; color: var(--primary-blue); margin-left: 0.5rem;"></i>
+                <input type="text" id="cityInput" placeholder="Search City, Town or Area (e.g. Islamabad, London, Brooklyn)..." onkeypress="if(event.key === 'Enter') syncClinicalGrid()">
+                
+                <select id="radiusSelect" class="radius-selector">
+                    <option value="5000">5 KM</option>
+                    <option value="10000">10 KM</option>
+                    <option value="15000" selected>15 KM</option>
+                    <option value="30000">30 KM</option>
+                </select>
+
+                <button class="btn-sync-grid" onclick="syncClinicalGrid()">
+                    <i class="fas fa-sync-alt"></i> Sync Grid
+                </button>
+            </div>
+        </div>
+
+        <div class="container graph-layer">
+            <div id="map-graph"></div>
+            <div class="clinics-sidebar" id="clinicsList">
+                <div style="text-align:center; padding:5rem 2rem; opacity:0.3;">
+                    <i class="fas fa-satellite-dish" style="font-size:3.5rem; margin-bottom:1.5rem;"></i>
+                    <p>Satellite synchronization pending...<br>Please enter your city to calculate nearest clinics.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer-minimal container">
+        <div class="footer-wrap" style="padding-top: 6rem;">
+            <div class="footer-left">
+                <div class="logo">Clinical<span>Editorial</span></div>
+                <p>Professional pharmaceutical intelligence & verified network graph.</p>
+            </div>
+            <div class="footer-right">
+                <span>&copy; 2026 Clinical Editorial Platform</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        let graph, nodeMarkers = [], activeVector, userPos;
+
+        function initGraph() {
+            graph = L.map('map-graph', { zoomControl: false }).setView([20, 0], 2);
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { 
+                attribution: '&copy; CARTO &copy; OpenStreetMap' 
+            }).addTo(graph);
+            L.control.zoom({ position: 'bottomright' }).addTo(graph);
+        }
+
+        async function useBrowserLocation() {
+            if (!navigator.geolocation) {
+                alert("Geolocation is not supported by your browser");
+                return;
+            }
+
+            const btn = document.querySelector('.btn-locate-me');
+            btn.style.color = "#00f2ff";
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i>';
+
+            navigator.geolocation.getCurrentPosition(async (position) => {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+                userPos = [lat, lon];
+                
+                // Try to get city name for the input field
+                try {
+                    const revUrl = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`;
+                    const res = await fetch(revUrl);
+                    const data = await res.json();
+                    if (data && data.address) {
+                        const city = data.address.city || data.address.town || data.address.suburb || "My Location";
+                        document.getElementById('cityInput').value = city;
+                    }
+                } catch(e) {}
+
+                btn.innerHTML = '<i class="fas fa-location-crosshairs"></i>';
+                btn.style.color = "white";
+                
+                processCoordinates(lat, lon);
+            }, (err) => {
+                alert("Access to location denied or unavailable.");
+                btn.innerHTML = '<i class="fas fa-location-crosshairs"></i>';
+                btn.style.color = "white";
+            });
+        }
+
+        async function syncClinicalGrid() {
+            const city = document.getElementById('cityInput').value;
+            if (!city) return;
+
+            const list = document.getElementById('clinicsList');
+            const btn = document.querySelector('.btn-sync-grid');
+            list.innerHTML = '<div class="loader-wrap"><div class="loading-bits"><div class="loading-bit"></div><div class="loading-bit"></div><div class="loading-bit"></div></div><p style="font-size:0.8rem; color:var(--text-muted); font-weight:700;">GEOSPATIAL SYNC IN PROGRESS</p></div>';
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> SYNCHRONIZING...';
+            btn.disabled = true;
+
+            try {
+                // 1. Improved Geocoding (Removed restrictive featuretype)
+                const geoUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(city)}&limit=1`;
+                const gRes = await fetch(geoUrl);
+                const gData = await gRes.json();
+
+                if (gData.length === 0) {
+                    list.innerHTML = '<div style="text-align:center; padding:3rem;"><i class="fas fa-exclamation-triangle" style="font-size:2rem; color:#ff4444; margin-bottom:1rem;"></i><p>Target node not found in global registry. Try a broader name.</p></div>';
+                    return;
+                }
+
+                const lat = parseFloat(gData[0].lat);
+                const lon = parseFloat(gData[0].lon);
+                processCoordinates(lat, lon);
+
+            } catch (err) {
+                console.error(err);
+                list.innerHTML = '<p style="text-align:center; color:#ff4444; padding:2rem;">Registry Sync Failure. Check network.</p>';
+            } finally {
+                btn.innerHTML = '<i class="fas fa-sync-alt"></i> Sync Grid';
+                btn.disabled = false;
+            }
+        }
+
+        async function processCoordinates(lat, lon) {
+            userPos = [lat, lon];
+            graph.flyTo(userPos, 14, { duration: 2 });
+
+            const list = document.getElementById('clinicsList');
+            const radius = document.getElementById('radiusSelect').value || 15000;
+
+            // List of reliable Overpass API mirrors for high availability
+            const mirrors = [
+                'https://overpass-api.de/api/interpreter',
+                'https://lz4.overpass-api.de/api/interpreter',
+                'https://z.overpass-api.de/api/interpreter',
+                'https://overpass.kumi.systems/api/interpreter'
+            ];
+
+            const overpassQuery = `
+                [out:json][timeout:30];
+                (
+                  node["amenity"="pharmacy"](around:${radius}, ${lat}, ${lon});
+                  way["amenity"="pharmacy"](around:${radius}, ${lat}, ${lon});
+                );
+                out center;
+            `;
+
+            list.innerHTML = `
+                <div class="loader-wrap">
+                    <div class="loading-bits">
+                        <div class="loading-bit"></div>
+                        <div class="loading-bit"></div>
+                        <div class="loading-bit"></div>
+                    </div>
+                    <p style="font-weight:600; color:#fff;">SYNCHRONIZING WITH GLOBAL REGISTRY</p>
+                    <p id="syncStatus" style="font-size:0.8rem; color:rgba(255,255,255,0.4); margin-top:-0.5rem;">Accessing primary clinical node...</p>
+                </div>
+            `;
+
+            let success = false;
+            let errorMsg = "Registry Sync Failure.";
+
+            for (let i = 0; i < mirrors.length; i++) {
+                if (success) break;
+                const mirror = mirrors[i];
+                const statusEl = document.getElementById('syncStatus');
+                if (statusEl && i > 0) statusEl.innerText = `Retrying via secure mirror ${i}...`;
+                
+                try {
+                    console.log(`Attempting sync via: ${mirror}`);
+                    const oUrl = `${mirror}?data=${encodeURIComponent(overpassQuery)}`;
+                    const pRes = await fetch(oUrl);
+                    
+                    if (!pRes.ok) {
+                        if (pRes.status === 429) throw new Error("Rate Limited");
+                        throw new Error(`HTTP Error: ${pRes.status}`);
+                    }
+
+                    const pData = await pRes.json();
+                    
+                    clearGraph();
+                    list.innerHTML = '';
+
+                    if (!pData.elements || pData.elements.length === 0) {
+                        list.innerHTML = `<div style="text-align:center; padding:3rem;"><i class="fas fa-search-location" style="font-size:2rem; opacity:0.3; margin-bottom:1rem;"></i><p>No verified clinical hubs detected within ${radius/1000}km of this node.</p></div>`;
+                        success = true;
+                        continue;
+                    }
+
+                    // Add user marker
+                    const userMarker = L.circleMarker(userPos, {
+                        radius: 10,
+                        fillColor: "#0066ff",
+                        color: "#fff",
+                        weight: 2,
+                        opacity: 1,
+                        fillOpacity: 0.8
+                    }).addTo(graph).bindPopup("Search Origin Point");
+                    nodeMarkers.push(userMarker);
+
+                    // 3. Process Verified Nodes
+                    const nodes = pData.elements.map(p => {
+                        const pLat = p.lat || p.center.lat;
+                        const pLon = p.lon || p.center.lon;
+                        const d = calculateKM(lat, lon, pLat, pLon);
+                        return {
+                            ...p,
+                            lat: pLat,
+                            lon: pLon,
+                            label: p.tags['name:en'] || p.tags.name || "Verified Pharmacy Hub",
+                            loc: (p.tags["addr:street"] || "Grid Access Only") + (p.tags["addr:city"] ? ", " + p.tags["addr:city"] : ""),
+                            phone: p.tags.phone || p.tags['contact:phone'] || null,
+                            hours: p.tags.opening_hours || null,
+                            km: d
+                        };
+                    }).sort((a, b) => a.km - b.km).slice(0, 30);
+
+                    // 4. Update Graph & Sidebar
+                    nodes.forEach((n, i) => {
+                        const markerIndex = i + 1; // 0 is userMarker
+                        const marker = L.marker([n.lat, n.lon], {
+                            icon: L.divIcon({ className: 'leaflet-div-icon', html: `<div class="node-marker" title="${n.label}"></div>`, iconSize:[24,24] })
+                        }).addTo(graph);
+                        
+                        let popupContent = `
+                            <div class="clinical-popup">
+                                <b style="color:var(--primary-blue); font-size:1.1rem;">${n.label}</b><br>
+                                <small style="display:block; margin:4px 0; opacity:0.7;">${n.loc}</small>
+                                <div style="margin:10px 0; padding:8px; background:rgba(0,102,255,0.1); border-radius:8px; border-left:3px solid var(--primary-blue);">
+                                    <small>Precision Distance: <b>${n.km.toFixed(2)} km</b></small>
+                                </div>
+                                <button onclick="focusNode(${n.lat}, ${n.lon}, ${markerIndex})" style="width:100%; padding:10px; background:var(--primary-blue); color:white; border:none; border-radius:6px; cursor:pointer; font-weight:700; font-size:0.8rem; display:flex; align-items:center; justify-content:center; gap:8px;">
+                                    <i class="fas fa-bezier-curve"></i> GENERATE VECTOR PATH
+                                </button>
+                                <a href="https://www.google.com/maps/dir/?api=1&destination=${n.lat},${n.lon}" target="_blank" style="display:block; text-align:center; margin-top:8px; color:var(--primary-blue); text-decoration:none; font-size:0.75rem; font-weight:600;">
+                                    View in World Registry <i class="fas fa-external-link-alt" style="font-size:0.6rem;"></i>
+                                </a>
+                            </div>
+                        `;
+                        
+                        marker.bindPopup(popupContent, { maxWidth: 280 });
+                        nodeMarkers.push(marker);
+
+                        const card = document.createElement('div');
+                        card.className = 'pharmacy-node';
+                        card.id = `node-${i}`;
+                        card.onclick = () => focusNode(n.lat, n.lon, markerIndex);
+                        card.innerHTML = `
+                            <span class="km-badge">${n.km.toFixed(2)} KM PRECISION</span>
+                            <h3>${n.label}</h3>
+                            <div class="meta"><i class="fas fa-location-arrow" style="color:#00f2ff"></i> ${n.loc}</div>
+                            ${n.hours ? `<div class="meta" style="font-size:0.75rem;"><i class="far fa-clock"></i> ${n.hours}</div>` : ''}
+                            <div class="node-actions">
+                                <button class="btn-nav" onclick="event.stopPropagation(); focusNode(${n.lat}, ${n.lon}, ${markerIndex})">
+                                    <i class="fas fa-bezier-curve"></i> Vector
+                                </button>
+                                <a href="https://www.google.com/maps/dir/?api=1&destination=${n.lat},${n.lon}" target="_blank" class="btn-nav" onclick="event.stopPropagation()">
+                                    <i class="fas fa-compass"></i> Route
+                                </a>
+                            </div>
+                        `;
+                        list.appendChild(card);
+                    });
+                    success = true;
+                } catch (err) {
+                    console.warn(`Mirror ${mirror} failed:`, err);
+                    errorMsg = `Server busy (Attempting backup models...)`;
+                    list.innerHTML = `<p style="text-align:center; color:var(--text-muted); padding:2rem;">${errorMsg}</p>`;
+                }
+            }
+
+            if (!success) {
+                list.innerHTML = '<p style="text-align:center; color:#ff4444; padding:2rem;">All global Overpass mirrors are currently congested. Please try again in 30 seconds.</p>';
+            }
+        }
+
+        function focusNode(lat, lon, idx) {
+            graph.flyTo([lat, lon], 16);
+            if (nodeMarkers[idx]) nodeMarkers[idx].openPopup();
+            
+            if (activeVector) graph.removeLayer(activeVector);
+            activeVector = L.polyline([userPos, [lat, lon]], {
+                color: '#00f2ff', weight: 4, dashArray: '8, 12', className: 'path-vector', opacity: 0.9
+            }).addTo(graph);
+
+            document.querySelectorAll('.pharmacy-node').forEach(n => n.classList.remove('active'));
+            const card = document.getElementById(`node-${idx-1}`);
+            if(card) card.classList.add('active');
+        }
+
+        function calculateKM(lat1, lon1, lat2, lon2) {
+            const R = 6371;
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                      Math.sin(dLon/2) * Math.sin(dLon/2);
+            return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        }
+
+        function clearGraph() {
+            nodeMarkers.forEach(m => graph.removeLayer(m));
+            nodeMarkers = [];
+            if (activeVector) graph.removeLayer(activeVector);
+        }
+
+        document.addEventListener('DOMContentLoaded', initGraph);
+    </script>
+</body>
+</html>

@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expert Consultation | Pharmacy Precision</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+    <!-- Main Style -->
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .consultation-wrapper {
+            margin-top: 12rem;
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 2rem;
+            min-height: 750px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(40px);
+            border-radius: 3.5rem;
+            padding: 2.5rem;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.6);
+            animation: entranceUp 1s cubic-bezier(0.2, 1, 0.3, 1) both;
+        }
+
+        /* Doctor Sidebar */
+        .doctor-sidebar {
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 2.5rem;
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .doc-avatar-large {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0ef, #06f);
+            margin-bottom: 2rem;
+            position: relative;
+            padding: 5px;
+            box-shadow: 0 0 30px rgba(0, 242, 255, 0.3);
+        }
+
+        .doc-avatar-large img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #00030a;
+        }
+
+        .status-dot {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            width: 20px;
+            height: 20px;
+            background: #22c55e;
+            border-radius: 50%;
+            border: 3px solid #00030a;
+            box-shadow: 0 0 15px rgba(34, 197, 94, 0.5);
+        }
+
+        .doc-name { font-family: 'Outfit'; font-size: 1.8rem; font-weight: 800; margin-bottom: 0.5rem; }
+        .doc-specialty { color: #00f2ff; font-weight: 700; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 2.5rem; }
+
+        .doc-stats {
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: auto;
+        }
+
+        .stat-box {
+            background: rgba(255,255,255,0.03);
+            padding: 1.5rem;
+            border-radius: 1.5rem;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .stat-val { font-family: 'Outfit'; font-weight: 800; font-size: 1.2rem; display: block; }
+        .stat-lbl { font-size: 0.7rem; color: #64748b; }
+
+        /* Discussion Panel */
+        .discussion-panel {
+            display: flex;
+            flex-direction: column;
+            background: rgba(0,0,0,0.2);
+            border-radius: 2.5rem;
+            padding: 2.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            padding-bottom: 2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .active-label { display: flex; align-items: center; gap: 0.8rem; font-family: 'Outfit'; font-weight: 700; color: #94a3b8; }
+
+        .chat-scroll {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding-right: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 1.5rem 2rem;
+            border-radius: 1.5rem;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .msg-doctor {
+            align-self: flex-start;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-bottom-left-radius: 0.2rem;
+        }
+
+        .msg-patient {
+            align-self: flex-end;
+            background: linear-gradient(135deg, #0066ff, #0044cc);
+            color: white;
+            border-bottom-right-radius: 0.2rem;
+        }
+
+        .typing-indicator {
+            font-size: 0.85rem;
+            color: #00f2ff;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Chat Input */
+        .chat-input-wrapper {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 2rem;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s;
+        }
+
+        .chat-input-wrapper:focus-within {
+            border-color: #00f2ff;
+            background: rgba(255,255,255,0.05);
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.1);
+        }
+
+        .chat-input {
+            flex-grow: 1;
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 1rem;
+            font-family: 'Plus Jakarta Sans';
+            font-size: 1.1rem;
+            outline: none;
+        }
+
+        .send-btn {
+            background: #00f2ff;
+            color: #00030a;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .send-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px #00f2ff;
+        }
+
+        @keyframes entranceUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="cosmic-blob blob-1"></div>
+    <div class="cosmic-blob blob-2"></div>
+
+    <!-- Header Navigation -->
+    <header class="main-header">
+        <div class="header-container">
+            <div class="logo"><a href="index.html" style="text-decoration:none; color:inherit;">Clinical<span>Editorial</span></a></div>
+            <nav class="nav-menu">
+                <a href="analyzer.html">Medicine Analyzer</a>
+                <a href="locator.html">Pharmacy Locator</a>
+                <a href="expert_consultation.html" class="active">Expert Consultation</a>
+            </nav>
+            <div class="header-actions">
+                <button class="icon-btn" onclick="showProfile()">👤</button>
+                <button class="signin-btn" id="authBtn" onclick="toggleAuth()">Sign in</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="consultation-wrapper">
+            <!-- Sidebar with Doctor Info -->
+            <aside class="doctor-sidebar">
+                <div class="doc-avatar-large">
+                    <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&q=80&w=300" alt="Dr. Aliza">
+                    <div class="status-dot"></div>
+                </div>
+                <h2 class="doc-name">Dr. Aliza Chen</h2>
+                <p class="doc-specialty">Senior Clinical Pharmacologist</p>
+                
+                <p style="color: #64748b; font-size: 0.95rem; line-height: 1.6; margin-bottom: 3rem;">
+                    Specializing in molecular bio-equivalence and medication safety protocols. Verified Board Certified expert.
+                </p>
+
+                <div class="doc-stats">
+                    <div class="stat-box">
+                        <span class="stat-val">12k+</span>
+                        <span class="stat-lbl">Consultations</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-val">4.9/5</span>
+                        <span class="stat-lbl">Expert Rating</span>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Conversation Panel -->
+            <section class="discussion-panel">
+                <div class="chat-header">
+                    <div class="active-label">
+                        <span style="font-size: 1.5rem;">💬</span> Secure Clinical Discussion Panel
+                    </div>
+                    <div style="font-size: 0.8rem; color: #475569; letter-spacing: 0.1em; font-weight: 800;">
+                        ENCRYPTED | HIPAA COMPLIANT
+                    </div>
+                </div>
+
+                <div class="chat-scroll" id="chatHistory">
+                    <div class="message msg-doctor">
+                        Hello! I am Dr. Aliza. I've received your request for a clinical consultation. How can I assist you with your current medication regimen?
+                    </div>
+
+                    <div class="message msg-patient">
+                        Hello Doctor. I'm currently taking Lipitor 20mg and wanted to know if switching to the suggested generic alternative is clinically safe for my long-term treatment.
+                    </div>
+
+                    <div class="message msg-doctor">
+                        That's a great question. Bio-equivalence is my specialty. Lipitor contains Atorvastatin, and the alternatives we've indexed achieve 99.8% molecular parity. Have you noticed any side effects with your current dosage?
+                    </div>
+
+                    <div class="typing-indicator" id="typingStatus">
+                        <span>●</span><span>●</span><span>●</span> Dr. Aliza is typing clinical analysis...
+                    </div>
+                </div>
+
+                <!-- Input Area -->
+                <div class="chat-input-wrapper">
+                    <input type="text" class="chat-input" placeholder="Type your inquiry here..." onkeypress="if(event.key === 'Enter') sendMessage()">
+                    <button class="send-btn" onclick="sendMessage()">➤</button>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        function sendMessage() {
+            const input = document.querySelector('.chat-input');
+            const chatHistory = document.getElementById('chatHistory');
+            const typing = document.getElementById('typingStatus');
+
+            if (input.value.trim() !== "") {
+                const msg = document.createElement('div');
+                msg.className = 'message msg-patient';
+                msg.innerText = input.value;
+                
+                // Insert before typing indicator
+                chatHistory.insertBefore(msg, typing);
+                
+                input.value = "";
+                chatHistory.scrollTop = chatHistory.scrollHeight;
+
+                // Simple auto-reply felt response
+                setTimeout(() => {
+                    const reply = document.createElement('div');
+                    reply.className = 'message msg-doctor';
+                    reply.innerText = "Understood. I am reviewing the molecular stability data for your request. One moment please.";
+                    chatHistory.insertBefore(reply, typing);
+                    chatHistory.scrollTop = chatHistory.scrollHeight;
+                }, 2000);
+            }
+        }
+
+        // --- Auth & Header logic ---
+        function toggleAuth() {
+            const isAuth = localStorage.getItem('auth') === 'true';
+            if (isAuth) {
+                localStorage.removeItem('auth');
+                localStorage.removeItem('user');
+                window.location.reload();
+            } else {
+                window.location.href = 'index.html#auth';
+            }
+        }
+
+        async function loadDoctorInfo() {
+            try {
+                const res = await fetch('http://localhost:8000/api/doctors');
+                const doctors = await res.json();
+                if (doctors.length > 0) {
+                    const doc = doctors[0]; // For now taking the first as current expert
+                    document.querySelector('.doc-name').innerText = doc.name;
+                    document.querySelector('.doc-specialty').innerText = doc.specialty;
+                    document.querySelector('.doc-avatar-large img').src = doc.avatar;
+                    document.querySelector('.stat-box .stat-val').innerText = doc.experience;
+                    document.querySelectorAll('.stat-box .stat-val')[1].innerText = doc.rating + '/5';
+                }
+            } catch (e) { console.error("Failed to load doctor.", e); }
+        }
+
+        window.onload = function() {
+            loadDoctorInfo();
+            const isAuth = localStorage.getItem('auth') === 'true';
+            const authBtn = document.getElementById('authBtn');
+            if (isAuth && authBtn) {
+                authBtn.innerText = 'Logout';
+                authBtn.classList.add('logout-style');
+            }
+        };
+
+        function showProfile() {
+            window.location.href = 'profile.html';
+        }
+    </script>
+</body>
+</html>

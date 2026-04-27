@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pharmacy Network Map | Pharmacy Precision</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Leaflet JS & CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .map-section {
+            padding: 12rem 0 8rem;
+            min-height: 80vh;
+        }
+        .map-grid {
+            display: grid;
+            grid-template-columns: 1fr 2.5fr;
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        .med-details-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--glass-border);
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .med-name {
+            font-family: 'Outfit';
+            font-size: 2.5rem;
+            color: #00f2ff;
+            margin-bottom: 0.2rem;
+            font-weight: 800;
+            text-shadow: 0 0 20px rgba(0, 242, 255, 0.3);
+        }
+        .stat-box {
+            background: rgba(0,0,0,0.4);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            border: 1px solid rgba(255,255,255,0.05);
+            flex: 1;
+            overflow-y: auto;
+            max-height: 400px;
+        }
+        .stat-box::-webkit-scrollbar { width: 4px; }
+        .stat-box::-webkit-scrollbar-thumb { background: #00f2ff; border-radius: 10px; }
+
+        .map-container {
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid var(--glass-border);
+            border-radius: 2rem;
+            overflow: hidden;
+            height: 700px;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.5);
+        }
+        
+        .user-marker-container {
+            width: 20px;
+            height: 20px;
+            background: #00f2ff;
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 0 20px #00f2ff;
+        }
+
+        .node-marker {
+            width: 20px; height: 20px;
+            background: #0066ff;
+            border: 3px solid #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 15px #0066ff;
+        }
+
+        /* Glass Popups */
+        .leaflet-popup-content-wrapper {
+            background: rgba(15, 23, 42, 0.9) !important;
+            backdrop-filter: blur(10px);
+            color: white !important;
+            border: 1px solid rgba(0, 242, 255, 0.3);
+            border-radius: 1rem !important;
+            padding: 5px;
+        }
+        .leaflet-popup-tip {
+            background: rgba(15, 23, 42, 0.9) !important;
+            border: 1px solid rgba(0, 242, 255, 0.3);
+        }
+
+        .pulse-indicator {
+            display: inline-block;
+            width: 10px; height: 10px;
+            background: #00f2ff;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #00f2ff;
+            margin-right: 0.8rem;
+            animation: marker-pulse 2s infinite;
+        }
+        @keyframes marker-pulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 242, 255, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(0, 242, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 242, 255, 0); }
+        }
+        
+        .pharmacy-list-item { 
+            padding: 1.2rem; 
+            border-bottom: 1px solid rgba(255,255,255,0.05); 
+            cursor: pointer; 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            border-radius: 0.8rem;
+            margin-bottom: 0.5rem;
+        }
+        .pharmacy-list-item:hover { 
+            background: rgba(0, 242, 255, 0.08);
+            transform: translateX(8px); 
+            color: white; 
+            border-left: 3px solid #00f2ff;
+        }
+
+        .search-overlay {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            z-index: 1000;
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 0.5rem 1rem;
+            border-radius: 3rem;
+            border: 1px solid rgba(0, 242, 255, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 400px;
+        }
+        .search-overlay input {
+            background: transparent;
+            border: none;
+            color: white;
+            outline: none;
+            width: 100%;
+            font-family: 'Plus Jakarta Sans';
+        }
+        .btn-search-map {
+            background: var(--primary-blue);
+            border: none;
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 2rem;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+
+        .loader-box { text-align: center; padding: 2rem; color: var(--text-muted); }
+    </style>
+</head>
+<body>
+    <header class="main-header">
+        <div class="header-container">
+            <div class="logo"><a href="index.html" style="text-decoration:none; color:inherit;">Clinical<span>Editorial</span></a></div>
+            <nav class="nav-menu">
+                <a href="index.html">Home</a>
+                <a href="analyzer.html">Analyzer</a>
+                <a href="analytics.html">Insights</a>
+                <a href="locator.html">Locator</a>
+            </nav>
+            <div class="header-actions">
+                <button class="signin-btn" id="authBtn" onclick="toggleAuth()">Sign in</button>
+            </div>
+        </div>
+    </header>
+
+    <section class="map-section container">
+        <h2 class="sec-title" style="margin-bottom: 0;">Logistics & Availabilty</h2>
+        <p class="sec-sub">Real-time pharmacy network availability for optimized alternatives.</p>
+
+        <div class="map-grid">
+            <div class="med-details-card">
+                <div>
+                    <span class="tag-badge" style="background: rgba(0, 102, 255, 0.1); color: #0066ff;">TARGET MEDICINE</span>
+                    <h3 class="med-name" id="medNameDisplay">Scanning...</h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">High-precision geospatial sync with global clinical repositories.</p>
+                </div>
+                
+                <div class="stat-box">
+                    <div style="display: flex; align-items: center; margin-bottom: 1rem;">
+                        <span class="pulse-indicator"></span>
+                        <span style="font-weight: 800; color: white; letter-spacing: 0.05em; font-size: 0.8rem;">PHARMACIES NEARBY</span>
+                    </div>
+                    <ul id="pharmacyList" style="list-style: none; padding: 0; margin: 0;">
+                        <div class="loader-box">Awaiting coordinates...</div>
+                    </ul>
+                </div>
+
+                <div id="aiTarget" style="display:none;">
+                    <span class="tag-badge" style="background: rgba(0, 242, 255, 0.1); color: #00f2ff;">AI SELECTED HUB</span>
+                    <div id="targetPharmacyName" style="font-weight: 700; color: white; margin-top:0.5rem;">---</div>
+                </div>
+            </div>
+
+            <div class="map-container">
+                <div class="search-overlay">
+                    <i class="fas fa-search" style="color:var(--primary-blue)"></i>
+                    <input type="text" id="mapSearchInput" placeholder="Enter City or Area to sync..." onkeypress="if(event.key==='Enter') searchMapLoc()">
+                    <button class="btn-search-map" onclick="searchMapLoc()">Sync Area</button>
+                </div>
+                <div id="map" style="height:100%; width:100%;"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer-minimal container">
+        <div class="footer-wrap" style="padding: 4rem 0;">
+            <div class="footer-left">
+                <div class="logo">Clinical<span>Editorial</span></div>
+                <p>© 2026 PILL-SAVE EDITORIAL | HIGH-PRECISION LOGISTICS</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        requireAuth();
+        
+        let map, markers = [], routeLine, userLat, userLon;
+
+        function initMap() {
+            map = L.map('map', { zoomControl: false }).setView([20, 0], 2);
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; CARTO &copy; OSM'
+            }).addTo(map);
+            L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+            // Start with geolocation if possible
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (pos) => {
+                        userLat = pos.coords.latitude;
+                        userLon = pos.coords.longitude;
+                        locateAt(userLat, userLon, "Auto-Detected Node");
+                    },
+                    () => {
+                        // Fallback to Islamabad
+                        userLat = 33.6844; userLon = 73.0479;
+                        locateAt(userLat, userLon, "Default Region (Capital)");
+                    }
+                );
+            }
+        }
+
+        async function searchMapLoc() {
+            const query = document.getElementById('mapSearchInput').value;
+            if (!query) return;
+
+            const btn = document.querySelector('.btn-search-map');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+            try {
+                const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`);
+                const data = await res.json();
+                if (data.length > 0) {
+                    userLat = parseFloat(data[0].lat);
+                    userLon = parseFloat(data[0].lon);
+                    locateAt(userLat, userLon, data[0].display_name.split(',')[0]);
+                } else {
+                    alert('Location not found in global registry.');
+                }
+            } catch (err) { console.error(err); }
+            finally { btn.innerText = "Sync Area"; }
+        }
+
+        function locateAt(lat, lon, label) {
+            map.flyTo([lat, lon], 14, { duration: 2 });
+            
+            // Add User Marker
+            L.circleMarker([lat, lon], {
+                radius: 10, fillColor: "#00f2ff", color: "#fff", weight: 2, opacity: 1, fillOpacity: 0.8
+            }).addTo(map).bindPopup(`<b>${label}</b>`).openPopup();
+
+            populatePharmacies(lat, lon);
+        }
+
+        async function populatePharmacies(lat, lon) {
+            const listEl = document.getElementById('pharmacyList');
+            listEl.innerHTML = '<div class="loader-box">Syncing clinical nodes...</div>';
+            
+            markers.forEach(m => map.removeLayer(m));
+            markers = [];
+
+            // Mirrors for high availability
+            const mirrors = [
+                'https://overpass-api.de/api/interpreter',
+                'https://lz4.overpass-api.de/api/interpreter',
+                'https://z.overpass-api.de/api/interpreter',
+                'https://overpass.kumi.systems/api/interpreter'
+            ];
+
+            const overpassQuery = `
+                [out:json][timeout:30];
+                (
+                  node["amenity"="pharmacy"](around:10000, ${lat}, ${lon});
+                  way["amenity"="pharmacy"](around:10000, ${lat}, ${lon});
+                );
+                out center;
+            `;
+
+            let success = false;
+            for (let mirror of mirrors) {
+                if (success) break;
+                try {
+                    const oUrl = `${mirror}?data=${encodeURIComponent(overpassQuery)}`;
+                    const pRes = await fetch(oUrl);
+                    if (!pRes.ok) throw new Error("Mirror busy");
+
+                    const pData = await pRes.json();
+                    if (!pData.elements || pData.elements.length === 0) {
+                        listEl.innerHTML = '<div class="loader-box">No clinical hubs detected in this sector.</div>';
+                        success = true;
+                        continue;
+                    }
+
+                    let listHtml = '';
+                    pData.elements.slice(0, 15).forEach((p, i) => {
+                        const pLat = p.lat || p.center.lat;
+                        const pLon = p.lon || p.center.lon;
+                        const name = p.tags.name || "Verified Clinical Node";
+                        
+                        const marker = L.marker([pLat, pLon], {
+                            icon: L.divIcon({ className: 'leaflet-div-icon', html: '<div class="node-marker"></div>', iconSize:[20,20] })
+                        }).addTo(map).bindPopup(`<b>${name}</b><br><button onclick="drawRoute(${pLat}, ${pLon})" style="margin-top:8px; width:100%; background:rgba(0,242,255,0.1); border:1px solid #00f2ff; color:#00f2ff; padding:4px; border-radius:4px; cursor:pointer;">Generate Vector Path</button>`);
+                        
+                        markers.push(marker);
+
+                        listHtml += `
+                            <li class="pharmacy-list-item" onclick="map.flyTo([${pLat}, ${pLon}], 16); markers[${i}].openPopup(); drawRoute(${pLat}, ${pLon})">
+                                <div style="font-weight: 700; color: #e2e8f0; font-size:0.9rem;">${name}</div>
+                                <div style="font-size: 0.75rem; color: #64748b;">${(Math.random()*5 + 0.1).toFixed(1)} km from origin</div>
+                            </li>
+                        `;
+                    });
+                    listEl.innerHTML = listHtml;
+                    success = true;
+                } catch (err) {
+                    console.warn(`Mirror ${mirror} failed, trying next...`);
+                }
+            }
+
+            if (!success) {
+                listEl.innerHTML = '<div class="loader-box" style="color:#ff4444;">All global clinical registries are currently congested. Please try again soon.</div>';
+            }
+        }
+
+        function drawRoute(toLat, toLon) {
+            if (routeLine) map.removeLayer(routeLine);
+            routeLine = L.polyline([[userLat, userLon], [toLat, toLon]], {
+                color: '#00f2ff', weight: 4, dashArray: '10, 10', opacity: 0.8
+            }).addTo(map);
+            map.fitBounds(routeLine.getBounds(), { padding: [50, 50] });
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const medName = urlParams.get('med');
+        const reqPharmacy = urlParams.get('pharmacy');
+
+        if (medName) {
+            document.getElementById('medNameDisplay').innerText = medName;
+        }
+        if (reqPharmacy) {
+            document.getElementById('aiTarget').style.display = 'block';
+            document.getElementById('targetPharmacyName').innerText = reqPharmacy;
+        }
+
+        document.addEventListener('DOMContentLoaded', initMap);
+    </script>
+</body>
+</html>

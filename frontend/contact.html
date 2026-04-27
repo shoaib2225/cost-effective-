@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us | Pharmacy Precision</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+    <!-- Main Style -->
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .contact-section {
+            padding: 10rem 0 10rem;
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .contact-card {
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid var(--glass-border);
+            border-radius: 2rem;
+            padding: 4rem;
+            max-width: 600px;
+            width: 90%;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+        .contact-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            text-align: center;
+            background: linear-gradient(90deg, #00f2ff, #0066ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .contact-sub {
+            color: var(--text-muted);
+            text-align: center;
+            margin-bottom: 3rem;
+            font-size: 1.1rem;
+        }
+        .form-group {
+            margin-bottom: 2rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.8rem;
+            color: white;
+            font-weight: 500;
+            font-size: 0.9rem;
+            letter-spacing: 0.05em;
+        }
+        .form-control {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 1rem;
+            padding: 1.2rem;
+            color: white;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 15px rgba(0, 102, 255, 0.3);
+        }
+        textarea.form-control {
+            resize: vertical;
+            min-height: 120px;
+        }
+        .btn-send {
+            width: 100%;
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            border-radius: 1rem;
+            padding: 1.2rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+        }
+        .btn-send:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 102, 255, 0.4);
+            filter: brightness(1.1);
+        }
+        .btn-send:active {
+            transform: translateY(0);
+        }
+        .success-msg {
+            display: none;
+            text-align: center;
+            color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid #10b981;
+            padding: 2rem;
+            border-radius: 1.5rem;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="ambient-blob blob-1"></div>
+    <div class="ambient-blob blob-2"></div>
+
+    <!-- Header Navigation -->
+    <header class="main-header">
+        <div class="header-container">
+            <div class="logo"><a href="index.html" style="text-decoration:none; color:inherit;">Clinical<span>Editorial</span></a></div>
+            <nav class="nav-menu">
+                <a href="analyzer.html">Medicine Analyzer</a>
+                <a href="locator.html">Pharmacy Locator</a>
+            </nav>
+            <div class="header-actions">
+                <div class="search-mini" style="width: 250px;">
+                    <span class="icon" style="cursor: pointer;" onclick="goToAnalyzer()">🤖</span>
+                    <input type="text" id="headerSearch" placeholder="Ask AI Clinical Assistant..." onkeypress="if(event.key === 'Enter') goToAnalyzer()">
+                </div>
+                <button class="icon-btn" onclick="showProfile()">👤</button>
+                <button class="signin-btn" id="authBtn" onclick="toggleAuth()">Sign in</button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="contact-section">
+            <div class="contact-card">
+                <h1 class="contact-title">Contact Us</h1>
+                <p class="contact-sub">Have questions about our clinical grid? Our team is standing by to assist.</p>
+                
+                <form id="contactForm">
+                    <div class="form-group">
+                        <label for="name">NAME</label>
+                        <input type="text" id="name" class="form-control" placeholder="Enter your full name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">EMAIL ADDRESS</label>
+                        <input type="email" id="email" class="form-control" placeholder="Enter your email address" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">DESCRIPTION</label>
+                        <textarea id="description" class="form-control" placeholder="How can we help you today?" required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn-send" id="submitBtn">
+                        <span>Send Message</span>
+                        <span>✉️</span>
+                    </button>
+                </form>
+
+                <div id="successMsg" class="success-msg">
+                    <h3 style="margin-bottom: 0.5rem;">Transmission Successful!</h3>
+                    <p>Your clinical inquiry has been dispatched to our support queue. We will contact you shortly.</p>
+                    <br>
+                    <a href="index.html" style="color: #10b981; text-decoration: none; font-weight: 700;">← Return Home</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-cols">
+                <div class="col-brand">
+                    <div class="logo">Clinical<span>Editorial</span></div>
+                    <p class="brand-desc">Optimizing pharmaceutical management through clinical precision and financial transparency. Empowering patients nationwide.</p>
+                </div>
+                <div class="col-links">
+                    <h5>QUICK ACCESS</h5>
+                    <a href="info.html?page=Privacy Policy">Privacy Policy</a>
+                    <a href="info.html?page=Terms of Service">Terms of Service</a>
+                    <a href="contact.html">Contact Us</a>
+                </div>
+                <div class="col-links">
+                    <h5>RESOURCE CENTER</h5>
+                    <a href="info.html?page=Drug Safety">Drug Safety</a>
+                    <a href="info.html?page=Support Desk">Support Desk</a>
+                </div>
+                <div class="col-links">
+                    <h5>CONNECT</h5>
+                    <div class="social-icons">
+                        <a href="https://www.youtube.com" target="_blank" title="YouTube">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+                        </a>
+                        <a href="https://www.facebook.com" target="_blank" title="Facebook">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-2.21c0-.837.38-1.29 1.173-1.29h2.827v-4h-3.327c-3.604 0-5.632 1.954-5.632 5.093v2.407z"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2026 PILL-SAVE EDITORIAL | HIGH-PRECISION PHARMACY SOLUTIONS</p>
+                <div class="legal-badges">
+                    <span>HIPAA COMPLIANT</span> | <span>FDA VERIFIED DATA</span> | <span>SECURE ACCESS</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<span>Transmitting...</span>';
+            submitBtn.disabled = true;
+
+            const payload = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                description: document.getElementById('description').value
+            };
+
+            try {
+                // Determine API URL (handle local vs production-like path)
+                const apiUrl = 'http://localhost:8000/api/contact';
+                
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    document.getElementById('contactForm').style.display = 'none';
+                    document.getElementById('successMsg').style.display = 'block';
+                } else {
+                    const err = await response.json();
+                    alert("Error: " + (err.detail || "Failed to dispatch message."));
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Network error. Please ensure the backend server is running.");
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

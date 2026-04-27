@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medicine Analyzer | Pharmacy Precision</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+    <!-- Main Style -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="main-header">
+        <div class="header-container">
+            <div class="logo"><a href="index.html" style="text-decoration:none; color:inherit;">Clinical<span>Editorial</span></a></div>
+            <nav class="nav-menu">
+                <a href="analyzer.html">Medicine Analyzer</a>
+                <a href="analytics.html">Data Insights</a>
+                <a href="locator.html">Pharmacy Locator</a>
+            </nav>
+            <div class="header-actions">
+                <div class="search-mini" style="width: 250px;">
+                    <span class="icon" style="cursor: pointer;" onclick="goToAnalyzer()">🤖</span>
+                    <input type="text" id="headerSearch" placeholder="Ask AI Clinical Assistant..." onkeypress="if(event.key === 'Enter') goToAnalyzer()">
+                </div>
+                <button class="icon-btn" onclick="showProfile()">👤</button>
+                <button class="signin-btn" id="authBtn" onclick="toggleAuth()">Sign in</button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Medicine Analyzer Section (Pulled from index.html) -->
+        <section id="analyzer" class="analyzer-section" style="padding-top: 15rem; min-height: 80vh;">
+            <div class="container text-center">
+                <h2 class="sec-title">Medicine Analyzer</h2>
+                <p class="sec-sub">Inject your current prescription details for an instant clinical comparison and cost analysis.</p>
+
+                <div class="search-console">
+                    <span class="console-label">PRESCRIPTION SEARCH</span>
+                    <div class="input-group">
+                        <input type="text" id="medSearch" placeholder="e.g., Lipitor or Atorvastatin..." oninput="handleSearch()" onkeypress="if(event.key === 'Enter') runAnalysis()">
+                        <button class="btn-run" onclick="runAnalysis()">⚡ Run Analysis</button>
+                    </div>
+                </div>
+
+                <div id="resultsGrid" class="results-grid">
+                    <!-- Comparison cards injected here via JS -->
+                    <div class="placeholder-msg">Enter a medicine name to synchronize clinical data.</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-cols">
+                <div class="col-brand">
+                    <div class="logo">Clinical<span>Editorial</span></div>
+                    <p class="brand-desc">Optimizing pharmaceutical management through clinical precision and financial transparency. Empowering patients nationwide.</p>
+                </div>
+                <div class="col-links">
+                    <h5>QUICK ACCESS</h5>
+                    <a href="info.html?page=Privacy Policy">Privacy Policy</a>
+                    <a href="info.html?page=Terms of Service">Terms of Service</a>
+                    <a href="contact.html">Contact Us</a>
+                </div>
+                <div class="col-links">
+                    <h5>RESOURCE CENTER</h5>
+                    <a href="info.html?page=Drug Safety">Drug Safety</a>
+                    <a href="info.html?page=Support Desk">Support Desk</a>
+                </div>
+                <div class="col-links">
+                    <h5>CONNECT</h5>
+                    <div class="social-icons">
+                        <a href="https://www.youtube.com" target="_blank" title="YouTube">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+                        </a>
+                        <a href="https://www.facebook.com" target="_blank" title="Facebook">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-2.21c0-.837.38-1.29 1.173-1.29h2.827v-4h-3.327c-3.604 0-5.632 1.954-5.632 5.093v2.407z"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2026 PILL-SAVE EDITORIAL | HIGH-PRECISION PHARMACY SOLUTIONS</p>
+                <div class="legal-badges">
+                    <span>HIPAA COMPLIANT</span> | <span>FDA VERIFIED DATA</span> | <span>SECURE ACCESS</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+    <script>
+        // Guard route: Only allow if authenticated
+        requireAuth();
+    </script>
+</body>
+</html>

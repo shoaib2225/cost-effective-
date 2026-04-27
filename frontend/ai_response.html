@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Clinical Response | Pharmacy Precision</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+    <!-- Main Style -->
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            background: #00030a;
+            position: relative;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Premium Floating Background Blobs */
+        .cosmic-blob {
+            position: fixed;
+            width: 700px;
+            height: 700px;
+            border-radius: 50%;
+            filter: blur(140px);
+            opacity: 0.12;
+            z-index: -1;
+            pointer-events: none;
+            animation: cosmicFloat 25s infinite alternate ease-in-out;
+        }
+        .blob-1 { background: radial-gradient(circle, #0066ff, transparent); top: -20%; right: -10%; }
+        .blob-2 { background: radial-gradient(circle, #00f2ff, transparent); bottom: -20%; left: -10%; animation-delay: -5s; }
+        .blob-3 { background: radial-gradient(circle, #7000ff, transparent); top: 40%; left: 10%; opacity: 0.08; animation-duration: 35s; }
+
+        @keyframes cosmicFloat {
+            0% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(50px, 100px) scale(1.1); }
+            66% { transform: translate(-80px, 40px) scale(0.9); }
+            100% { transform: translate(0, 0) scale(1); }
+        }
+
+        .ai-chat-response {
+            max-width: 950px;
+            margin: 14rem auto 8rem;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(40px);
+            border-radius: 3.5rem;
+            padding: 5rem;
+            box-shadow: 
+                0 40px 100px rgba(0,0,0,0.8),
+                inset 0 0 20px rgba(0, 242, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+            animation: entranceUp 1s cubic-bezier(0.2, 1, 0.3, 1) both;
+        }
+
+        @keyframes entranceUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .ai-chat-response::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(0, 242, 255, 0.3), transparent);
+        }
+
+        .ai-header {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 3.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 2.5rem;
+        }
+
+        .ai-avatar {
+            font-size: 3.5rem;
+            background: linear-gradient(135deg, #0ef, #06f);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 15px rgba(0, 242, 255, 0.4));
+        }
+
+        .ai-title {
+            font-family: 'Outfit';
+            font-weight: 800;
+            font-size: 2.2rem;
+            letter-spacing: -1px;
+            background: linear-gradient(to bottom, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .ai-message {
+            font-size: 1.35rem;
+            line-height: 1.9;
+            color: #f1f5f9;
+            white-space: pre-line;
+            font-weight: 400;
+            opacity: 0;
+            animation: fadeIn 1s ease-out 0.5s forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .ai-typing {
+            font-family: 'Outfit';
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            margin-bottom: 0.5rem;
+            color: #00f2ff;
+            text-shadow: 0 0 10px rgba(0, 242, 255, 0.2);
+        }
+
+        .action-container {
+            margin-top: 4.5rem;
+            display: flex;
+            gap: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 3.5rem;
+        }
+
+        /* Customized Action Buttons */
+        .ai-chat-response .btn-primary {
+            box-shadow: 0 20px 40px rgba(0, 102, 255, 0.3);
+            font-size: 1.1rem;
+            padding: 1.2rem 3.5rem !important;
+        }
+
+        .ai-chat-response .btn-glass {
+            padding: 1.2rem 3.5rem !important;
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Blobs -->
+    <div class="cosmic-blob blob-1"></div>
+    <div class="cosmic-blob blob-2"></div>
+    <div class="cosmic-blob blob-3"></div>
+
+    <!-- Header Navigation -->
+    <header class="main-header">
+        <div class="header-container">
+            <div class="logo"><a href="index.html" style="text-decoration:none; color:inherit;">Clinical<span>Editorial</span></a></div>
+            <nav class="nav-menu">
+                <a href="analyzer.html">Medicine Analyzer</a>
+                <a href="locator.html">Pharmacy Locator</a>
+            </nav>
+            <div class="header-actions">
+                <div class="search-mini" style="width: 250px;">
+                    <span class="icon" style="cursor: pointer;" onclick="goToAnalyzer()">🤖</span>
+                    <input type="text" id="headerSearch" placeholder="Ask AI Clinical Assistant..." onkeypress="if(event.key === 'Enter') goToAnalyzer()">
+                </div>
+                <button class="icon-btn" onclick="showProfile()">👤</button>
+                <button class="signin-btn" id="authBtn" onclick="toggleAuth()">Sign in</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="ai-chat-response">
+            <div class="ai-header">
+                <div class="ai-avatar">🤖</div>
+                <div>
+                    <div class="ai-typing" id="aiStatus">Connecting To Clinical Database...</div>
+                    <h1 class="ai-title">Clinical Intelligence Assistant</h1>
+                </div>
+            </div>
+            
+            <div id="aiContent" class="ai-message">
+                Processing your request for: <strong id="queryDisplay">...</strong>
+            </div>
+
+            <div class="action-container">
+                <button class="btn-primary" onclick="window.location.href='analyzer.html?search=' + encodeURIComponent(currentQuery)">View Full Cost Analysis →</button>
+                <button class="btn-glass" onclick="window.location.href='index.html?autofocus=true'">Ask Another Question</button>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const currentQuery = params.get('q') || 'General Guide';
+        document.getElementById('queryDisplay').innerText = currentQuery;
+
+        async function generateAIResponse() {
+            const content = document.getElementById('aiContent');
+            const status = document.getElementById('aiStatus');
+            
+            // Artificial delay for 'AI feeling'
+            setTimeout(async () => {
+                status.innerText = "Verified by AI Clinical Protocol";
+                
+                const clean = (str) => {
+                    if (!str) return "";
+                    // Remove repetitive dots, commas and technical clutter to make it human style
+                    return str.replace(/[.,…]{2,}/g, ' ')
+                              .replace(/Each film-coated Tablet contains:/gi, '')
+                              .replace(/Each reconstituted mL contains:/gi, '')
+                              .replace(/Each 5ml contains:/gi, '')
+                              .replace(/,/g, ' ')
+                              .replace(/\s+/g, ' ')
+                              .trim();
+                };
+
+                if (currentQuery.toLowerCase().includes('how') || currentQuery.toLowerCase().includes('guide')) {
+                    content.innerHTML = `Hi there! Welcome to Pharmacy Precision. I can help you save money on your medicines.
+
+To start, just head over to the Medicine Analyzer page and type in your medicine name. Our AI will search local pharmacies to find the exact same formula at a much lower price. You can save up to 70%!
+
+Would you like to try it now?`;
+                } else if (currentQuery.toLowerCase().includes('all medicine') || currentQuery.toLowerCase().includes('list medicine')) {
+                    try {
+                        const res = await fetch(`http://localhost:8000/api/medicines/all`);
+                        const data = await res.json();
+                        
+                        if (data && data.length > 0) {
+                            let listStr = "Sure! Here are some of the medicines I have in my registry right now:\n\n";
+                            data.forEach((med) => {
+                                listStr += `• ${med.name}\n  It's made by ${med.company} and uses the ${clean(med.formula)} formula. It usually costs around Rs. ${med.price}.\n\n`;
+                            });
+                            content.innerHTML = listStr;
+                        } else {
+                            content.innerHTML = "I don't have any medicines in my list yet. We might need to sync the database first!";
+                        }
+                    } catch (e) {
+                        content.innerHTML = "I ran into a bit of trouble while looking through my lists. My apologies!";
+                    }
+                } else {
+                    try {
+                        const res = await fetch(`http://localhost:8000/api/medicines/search?q=${encodeURIComponent(currentQuery)}`);
+                        const data = await res.json();
+                        
+                        if (data && data.length > 0) {
+                            const med = data[0];
+                            const cheap = med.alternatives[0];
+                            content.innerHTML = `I've looked into <strong style="color: #0ef; cursor: pointer;" onclick="window.location.href='pharmacy_map.html?med=' + encodeURIComponent('${med.name}') + '&pharmacy=Local Pharmacy'">${med.name}</strong> for you. It's manufactured by ${med.company} and uses the ${clean(med.formula)} formula. The market price is about Rs. ${med.price}.
+
+If you're looking to save money, I highly recommend checking out <strong style="color: #0ef; cursor: pointer;" onclick="window.location.href='pharmacy_map.html?med=' + encodeURIComponent('${cheap.name}') + '&pharmacy=' + encodeURIComponent('${cheap.pharmacy}')">${cheap.name}</strong>. It's the same clinical formula but you can find it at <strong>${cheap.pharmacy}</strong> for only Rs. ${cheap.price}. 
+
+Switching to this will save you a lot while keeping the same quality. You can see more details below!`;
+                        } else {
+                            content.innerHTML = `I couldn't find ${currentQuery} in my registry yet. 
+
+However, you can try searching for common medicines like Lipitor or Augmentin to see how I can help you save money. You can also use the Medicine Analyzer to search manually!`;
+                        }
+                    } catch (e) {
+                        content.innerHTML = "I'm having a little trouble connecting to my database right now. Please try again in a moment!";
+                    }
+                }
+            }, 1000);
+        }
+
+        generateAIResponse();
+    </script>
+</body>
+</html>

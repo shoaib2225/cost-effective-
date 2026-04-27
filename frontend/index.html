@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pharmacy Precision | Clinical Editorial</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap"
+        rel="stylesheet">
+    <!-- Main Style -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Header Navigation -->
+    <header class="main-header">
+        <div class="header-container">
+            <div class="logo"><a href="index.html"
+                    style="text-decoration:none; color:inherit;">Clinical<span>Editorial</span></a></div>
+            <nav class="nav-menu">
+                <a href="analyzer.html">Medicine Analyzer</a>
+                <a href="analytics.html">Data Insights</a>
+                <a href="locator.html">Pharmacy Locator</a>
+            </nav>
+            <div class="header-actions">
+                <div class="search-mini" style="width: 250px;">
+                    <span class="icon" style="cursor: pointer;" onclick="goToAnalyzer()">🤖</span>
+                    <input type="text" id="headerSearch" placeholder="Ask AI Clinical Assistant..."
+                        onkeypress="if(event.key === 'Enter') goToAnalyzer()">
+                </div>
+                <button class="icon-btn" onclick="showProfile()">👤</button>
+                <button class="signin-btn" id="authBtn" onclick="toggleAuth()">Sign in</button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="container container-hero">
+                <div class="hero-content">
+                    <span class="badge-blue" style="margin-bottom: 2rem; display: inline-block;">✨ THE DIGITAL
+                        APOTHECARY</span>
+                    <h1 class="hero-main">Pharmacy <br><span class="glow-text"
+                            style="color: #00f2ff; background: linear-gradient(90deg, #00f2ff, #0066ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Precision.</span>
+                    </h1>
+                    <p class="hero-sub">Access pharmaceutical expertise without the premium prize-tag. Our proprietary
+                        analyzer identifies high-quality alternatives with clinical-grade formula purity.</p>
+                    <div class="hero-btns">
+                        <button class="btn-primary" onclick="window.location.href='analyzer.html'">Analyze My Medicine
+                            →</button>
+                        <button class="btn-glass" onclick="window.location.href='locator.html'">Pharmacy
+                            Network</button>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <div class="visual-card-wrapper">
+                        <img src="https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&q=80&w=800"
+                            alt="Medicine Analysis" class="hero-img">
+                        <div class="floating-stat-card">
+                            <div class="stat-icon">🧬</div>
+                            <div class="stat-main">62%</div>
+                            <div class="stat-label">Average Savings</div>
+                            <p class="stat-desc">Verified price reductions active over national distribution networks.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Philosophy Section -->
+        <section class="phi-section">
+            <div class="container phi-grid">
+                <div class="phi-item phi-main">
+                    <div class="phi-img-wrapper">
+                        <img src="https://images.unsplash.com/photo-1628771065518-0d82f1938462?auto=format&fit=crop&w=600"
+                            alt="Pharmacy Professional">
+                        <div class="phi-overlay">
+                            <h3>Clinical Integrity First</h3>
+                            <p>Every alternative is double-verified by our board-certified pharmacologists to ensure
+                                molecular purity and safety profile consistency.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="phi-item phi-side">
+                    <div class="phi-card">
+                        <span class="phi-icon">🛡️</span>
+                        <h4>Transparent Pricing</h4>
+                        <p>No hidden rebates or insurance middleware markups. We prioritize patient health over
+                            corporate margin.</p>
+                    </div>
+                </div>
+                <div class="phi-item phi-cta blue-card">
+                    <h4>Expert Consultation 24/7 Availability</h4>
+                    <p>Connect with our pharmacists for immediate guidance on molecular switching.</p>
+                    <button class="cta-white-btn" onclick="window.location.href='expert_consultation.html'">Talk to
+                        Expert →</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dynamic Stats Section -->
+        <section class="stats-banner">
+            <div class="container stats-flex">
+                <div class="big-stat">
+                    <h2>85k+</h2>
+                    <p>Verified Alternatives</p>
+                </div>
+                <div class="big-stat">
+                    <h2>Rs. 4.2M</h2>
+                    <p>Patient Savings</p>
+                </div>
+                <div class="big-stat">
+                    <h2>99.8%</h2>
+                    <p>Formula Accuracy</p>
+                </div>
+                <div class="big-stat">
+                    <h2>24/7</h2>
+                    <p>AI Clinical Support</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Process Flow Section -->
+        <section class="process-section">
+            <div class="container">
+                <div class="text-center">
+                    <span class="badge-blue">THE PROTOCOL</span>
+                    <h2 class="sec-title">How It Works</h2>
+                    <p class="sec-sub">Three simple steps to clinical optimization and cost reduction.</p>
+                </div>
+                <div class="process-grid">
+                    <div class="process-step">
+                        <div class="step-num">01</div>
+                        <h3 class="step-title">Prescription Sync</h3>
+                        <p class="step-desc">Enter your current medication name or active formula into our
+                            high-precision search console.</p>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-numexplorer">02</div>
+                        <h3 class="step-title">Formula Analysis</h3>
+                        <p class="step-desc">Our AI parses the molecular structure to find bio-equivalent brands with
+                            identical safety scores.</p>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-num">03</div>
+                        <h3 class="step-title">Direct Procurement</h3>
+                        <p class="step-desc">Locate the optimized brand at your nearest network pharmacy and start
+                            saving instantly.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Trusted By Section -->
+        <section class="trusted-section">
+            <div class="container">
+                <p class="trusted-label">TRUSTED BY CLINICAL NETWORKS</p>
+                <div class="logo-cloud">
+                    <span>BIO-GEN</span>
+                    <span>PHARMA-CO</span>
+                    <span>HEAL-GRID</span>
+                    <span>MED-SYNC</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials -->
+        <section class="testimonials-section">
+            <div class="container">
+                <div class="text-center">
+                    <span class="badge-blue">PATIENT VOICES</span>
+                    <h2 class="sec-title">Clinically Proven Impact</h2>
+                    <p class="sec-sub">Join thousands who have optimized their pharmaceutical expenditure.</p>
+                </div>
+                <div class="test-grid">
+                    <div class="test-card">
+                        <span class="quote-icon">"</span>
+                        <p class="test-content">Saved over Rs. 15,000 on my chronic meds without compromising on
+                            quality.</p>
+                        <div class="user-info">
+                            <div class="user-avatar">RH</div>
+                            <div>
+                                <h5 style="margin:0;">Raheel H.</h5>
+                                <p style="font-size:0.75rem; color:var(--text-muted); margin:0;">Verified Patient</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="test-card">
+                        <span class="quote-icon">"</span>
+                        <p class="test-content">The AI analyzer found a bio-identical brand I didn't even know existed.
+                        </p>
+                        <div class="user-info">
+                            <div class="user-avatar">SJ</div>
+                            <div>
+                                <h5 style="margin:0;">Sara J.</h5>
+                                <p style="font-size:0.75rem; color:var(--text-muted); margin:0;">Clinical Researcher</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="test-card">
+                        <span class="quote-icon">"</span>
+                        <p class="test-content">Transparent, accurate, and incredibly easy to use. Highly recommended.
+                        </p>
+                        <div class="user-info">
+                            <div class="user-avatar">AK</div>
+                            <div>
+                                <h5 style="margin:0;">Asim K.</h5>
+                                <p style="font-size:0.75rem; color:var(--text-muted); margin:0;">Healthcare Exec</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Final Final CTA -->
+        <section class="final-cta">
+            <div class="container">
+                <div class="cta-box">
+                    <h2 style="font-family:'Outfit'; font-size:4rem; font-weight:800; margin-bottom: 2rem;">Ready to
+                        Optimize?</h2>
+                    <p>Start your clinical analysis today and access high-precision pharmaceutical expertise.</p>
+                    <button class="btn-primary" style="padding: 1.5rem 4rem; font-size: 1.2rem;"
+                        onclick="window.location.href='analyzer.html'">Launch Analyzer Now →</button>
+                    <div style="margin-top: 2rem; color: #475569; font-size: 0.8rem; letter-spacing: 0.1em;">
+                        NO CREDIT CARD REQUIRED | 100% HIPAA COMPLIANT
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-cols">
+                <div class="col-brand">
+                    <div class="logo">Clinical<span>Editorial</span></div>
+                    <p class="brand-desc">Optimizing pharmaceutical management through clinical precision and financial
+                        transparency. Empowering patients nationwide.</p>
+                </div>
+                <div class="col-links">
+                    <h5>QUICK ACCESS</h5>
+                    <a href="info.html?page=Privacy Policy">Privacy Policy</a>
+                    <a href="info.html?page=Terms of Service">Terms of Service</a>
+                    <a href="contact.html">Contact Us</a>
+                </div>
+                <div class="col-links">
+                    <h5>RESOURCE CENTER</h5>
+                    <a href="info.html?page=Drug Safety">Drug Safety</a>
+                    <a href="info.html?page=Support Desk">Support Desk</a>
+                </div>
+                <div class="col-links">
+                    <h5>CONNECT</h5>
+                    <div class="social-icons">
+                        <a href="https://www.youtube.com/@Nensongamer" target="_blank" title="YouTube">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z" />
+                            </svg>
+                        </a>
+                        <a href="https://www.facebook.com/people/Jimi-blogger/61564861670342/" target="_blank"
+                            title="Facebook">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-2.21c0-.837.38-1.29 1.173-1.29h2.827v-4h-3.327c-3.604 0-5.632 1.954-5.632 5.093v2.407z" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2026 PILL-SAVE EDITORIAL | HIGH-PRECISION PHARMACY SOLUTIONS</p>
+                <div class="legal-badges">
+                    <span>HIPAA COMPLIANT</span> | <span>FDA VERIFIED DATA</span> | <span>SECURE ACCESS</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+</body>
+
+</html>

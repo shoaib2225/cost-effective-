@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clinical Editorial | Data Insights</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body class="dark-mode">
+
+    <!-- Header -->
+    <header class="main-header">
+        <div class="header-container">
+            <div class="logo"><a href="index.html" style="text-decoration:none; color:inherit;">Clinical<span>Editorial</span></a></div>
+            <nav class="nav-menu">
+                <a href="index.html">Home</a>
+                <a href="analyzer.html">Analyzer</a>
+                <a href="analytics.html" class="active">Insights</a>
+                <a href="locator.html">Locator</a>
+                <a href="expert_consultation.html">Consultation</a>
+                <a href="info.html">Info</a>
+            </nav>
+            <div class="header-actions">
+                <a href="profile.html" class="icon-btn" id="profile-icon"><i class="fas fa-user-circle"></i></a>
+                <button class="signin-btn" onclick="location.href='login.html'">Sign In</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="analytics-page">
+        <!-- Hero Section -->
+        <section class="analytics-hero">
+            <div class="container">
+                <div class="badge-blue animate-pulse">CLINICAL DATA INTELLIGENCE</div>
+                <h1 class="hero-main">Pharma <span class="glow-text">Insights</span></h1>
+                <p class="hero-sub">Deciphering complex pharmaceutical market dynamics through advanced statistical modelling and visual intelligence.</p>
+            </div>
+        </section>
+
+        <!-- Dynamic Metrics Grid -->
+        <section class="metrics-section container">
+            <div class="bento-grid">
+                <!-- Expanded Market Overview Chart -->
+                <div class="bento-card large chart-card glass-card" style="grid-column: span 4; grid-row: span 3;">
+                    <div class="card-header-flex">
+                        <div>
+                            <h3><i class="fas fa-wave-square"></i> Price Variance Intelligence</h3>
+                            <p>Deep-dive into cost distributions across leading pharmaceutical manufacturers.</p>
+                        </div>
+                        <div class="chart-actions">
+                            <span class="live-indicator"><span class="dot"></span> Live Clinical Feed</span>
+                        </div>
+                    </div>
+                    <div id="plotly-chart" class="main-chart-container" style="min-height: 550px;">
+                        <div class="skeleton-loader"></div>
+                    </div>
+                </div>
+
+                <!-- Highlight Stats -->
+                <div class="bento-card mini glass-card">
+                    <div class="mini-stat-content">
+                        <i class="fas fa-microchip text-blue"></i>
+                        <span class="label">Processing Nodes</span>
+                        <h2>128 <small style="font-size: 0.5em; vertical-align: middle;">Active</small></h2>
+                    </div>
+                </div>
+
+                <div class="bento-card mini glass-card">
+                    <div class="mini-stat-content">
+                        <i class="fas fa-coins text-blue"></i>
+                        <span class="label">Avg. Market Price</span>
+                        <h2 id="stat-mean">---</h2>
+                    </div>
+                </div>
+                
+                <div class="bento-card mini glass-card">
+                    <div class="mini-stat-content">
+                        <i class="fas fa-chart-line text-cyan"></i>
+                        <span class="label">Price Fluctuation</span>
+                        <h2 id="stat-std">---</h2>
+                    </div>
+                </div>
+
+                <div class="bento-card mini glass-card">
+                    <div class="mini-stat-content">
+                        <i class="fas fa-shield-virus text-cyan"></i>
+                        <span class="label">Data Integrity</span>
+                        <h2>99.9%</h2>
+                    </div>
+                </div>
+
+                <!-- Market Density Distribution -->
+                <div class="bento-card medium glass-card" style="grid-column: span 4;">
+                    <div class="card-header-flex">
+                        <h3><i class="fas fa-chart-area"></i> Market Saturation & Density</h3>
+                        <p>Frequency analysis of unit pricing across global distribution networks.</p>
+                    </div>
+                    <div id="static-plot" class="static-plot-container" style="min-height: 400px;">
+                        <div class="skeleton-loader"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tech Methodology -->
+        <section class="tech-methodology container">
+            <div class="methodology-banner glass-card">
+                <div class="method-info">
+                    <h2>Advanced <span class="text-gradient">Clinical Modelling</span></h2>
+                    <p>Our proprietary algorithms continuously sweep clinical datasets to maintain a highly accurate map of bio-equivalent cost opportunities.</p>
+                    <div class="tech-row">
+                        <div class="tech-pill"><i class="fab fa-python"></i> Python Core</div>
+                        <div class="tech-pill"><i class="fas fa-brain"></i> Neural Analysis</div>
+                        <div class="tech-pill"><i class="fas fa-database"></i> High-Def Storage</div>
+                        <div class="tech-pill"><i class="fas fa-bolt"></i> Real-time Edge</div>
+                    </div>
+                </div>
+                <div class="method-visual">
+                    <div class="ai-brain-icon">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <span>BIG DATA SYNC</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer-minimal container">
+        <div class="footer-wrap">
+            <div class="footer-left">
+                <div class="logo">Clinical<span>Editorial</span></div>
+                <p>Advanced pharmaceutical intelligence for the modern era.</p>
+            </div>
+            <div class="footer-right">
+                <span>&copy; 2026 Clinical Editorial Platform</span>
+                <div class="socials">
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-github"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const API_BASE = 'http://localhost:8000/api/analytics';
+
+            // 1. Load Stats
+            try {
+                const res = await fetch(`${API_BASE}/stats`);
+                const stats = await res.json();
+                animateValue("stat-mean", 0, stats.mean, 1500, "Rs. ");
+                animateValue("stat-std", 0, stats.std, 1500, "");
+            } catch (e) { console.error(e); }
+
+            // 2. Load Interactive Chart
+            try {
+                const res = await fetch(`${API_BASE}/chart`);
+                const data = await res.json();
+                const fig = JSON.parse(data);
+                
+                const layout = {
+                    ...fig.layout,
+                    paper_bgcolor: 'rgba(0,0,0,0)',
+                    plot_bgcolor: 'rgba(0,0,0,0)',
+                    font: { color: '#94a3b8', family: 'Plus Jakarta Sans', size: 12 },
+                    title: { ...fig.layout.title, font: { color: '#f8fafc', size: 22, weight: 800 } },
+                    xaxis: { ...fig.layout.xaxis, gridcolor: 'rgba(255,255,255,0.05)', zerolinecolor: 'rgba(255,255,255,0.1)' },
+                    yaxis: { ...fig.layout.yaxis, gridcolor: 'rgba(255,255,255,0.05)', zerolinecolor: 'rgba(255,255,255,0.1)' },
+                    margin: { t: 80, b: 80, l: 80, r: 40 },
+                    showlegend: true,
+                    legend: { font: { color: '#f8fafc' } }
+                };
+
+                Plotly.newPlot('plotly-chart', fig.data, layout, {responsive: true, displayModeBar: false});
+            } catch (e) {
+                document.getElementById('plotly-chart').innerHTML = `<div class="error-state"><i class="fas fa-exclamation-triangle"></i><p>Intelligence Sync Failed</p></div>`;
+            }
+
+            // 3. Load Static Plot
+            try {
+                const res = await fetch(`${API_BASE}/plot`);
+                const data = await res.json();
+                if (data.image) {
+                    document.getElementById('static-plot').innerHTML = `<img src="data:image/png;base64,${data.image}" class="img-fluid reveal" style="max-height: 500px; width: auto; margin:0 auto;">`;
+                }
+            } catch (e) {
+                document.getElementById('static-plot').innerHTML = `<p class="error-msg">Static visualization offline</p>`;
+            }
+        });
+
+        function animateValue(id, start, end, duration, prefix) {
+            const obj = document.getElementById(id);
+            if (!obj) return;
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const current = (progress * (end - start) + start).toFixed(2);
+                obj.innerHTML = prefix + current;
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+    </script>
+</body>
+</html>
