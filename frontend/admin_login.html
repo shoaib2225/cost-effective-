@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login | Pharmacy Precision</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .login-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #00030a;
+            background-image: 
+                radial-gradient(circle at 50% 50%, rgba(0, 102, 255, 0.1) 0%, transparent 60%);
+        }
+        .login-card {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 2.5rem;
+            padding: 4.5rem;
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 50px 100px rgba(0,0,0,0.8);
+        }
+        .login-logo {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: #0066ff;
+            letter-spacing: -1px;
+        }
+        .login-logo span { color: white; }
+        .login-sub {
+            color: #94a3b8;
+            margin-bottom: 3.5rem;
+            font-size: 0.95rem;
+        }
+        .form-group {
+            margin-bottom: 1.8rem;
+            text-align: left;
+        }
+        .form-group label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: #64748b;
+            margin-bottom: 0.8rem;
+            letter-spacing: 0.1em;
+        }
+        .form-group input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 1.2rem;
+            padding: 1.1rem 1.6rem;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+        .form-group input:focus {
+            border-color: #0066ff;
+            box-shadow: 0 0 20px rgba(0, 102, 255, 0.2);
+        }
+        .btn-login {
+            width: 100%;
+            background: linear-gradient(90deg, #0055ff, #0066ff);
+            color: white;
+            border: none;
+            border-radius: 1.2rem;
+            padding: 1.3rem;
+            font-weight: 800;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin-top: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 102, 255, 0.3);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn-login:hover { transform: translateY(-3px); box-shadow: 0 20px 40px rgba(0, 102, 255, 0.4); }
+        .back-link {
+            display: inline-block;
+            margin-top: 2.5rem;
+            color: #64748b;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+        .back-link:hover { color: #00f2ff; }
+    </style>
+</head>
+<body>
+    <section class="login-section">
+        <div class="login-card">
+            <div class="login-logo">Admin<span>Panel</span></div>
+            <p class="login-sub">Enter credentials to manage systematic features.</p>
+            
+            <form onsubmit="handleAdminLogin(event)">
+                <div class="form-group">
+                    <label>ADMIN EMAIL</label>
+                    <input type="email" id="email" placeholder="admin@gmail.com" required>
+                </div>
+                <div class="form-group">
+                    <label>ADMIN PASSWORD</label>
+                    <input type="password" id="password" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn-login">System Access →</button>
+            </form>
+            
+            <br>
+            <a href="index.html" class="back-link">← Return to Homepage</a>
+        </div>
+    </section>
+
+    <script>
+        const API_BASE = window.location.port === '8000' ? "" : "http://127.0.0.1:8000";
+
+        async function handleAdminLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const btn = event.target.querySelector('button');
+            const origText = btn.innerText;
+
+            btn.innerText = "Connecting...";
+            btn.disabled = true;
+
+            try {
+                const response = await fetch(`${API_BASE}/api/admin/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    localStorage.setItem('adminUser', JSON.stringify(data.user));
+                    alert('Admin Login Successful!');
+                    window.location.href = 'admin.html';
+                } else {
+                    alert(data.detail || 'Login failed');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Connection Error: Could not reach the backend server at ' + (API_BASE || window.location.origin) + '. Please ensure the backend is running on port 8000.');
+            } finally {
+                btn.innerText = origText;
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>

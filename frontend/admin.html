@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Pharmacy Precision</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --admin-primary: #0066ff;
+            --admin-accent: #00f2ff;
+            --admin-bg: #00030a;
+            --admin-card: rgba(15, 23, 42, 0.4);
+            --admin-sidebar: #0d111b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --glass-border: rgba(255, 255, 255, 0.08);
+        }
+
+        body {
+            background-color: var(--admin-bg);
+            color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            margin: 0;
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--admin-sidebar);
+            border-right: 1px solid var(--glass-border);
+            padding: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            z-index: 10;
+        }
+
+        .sidebar-logo {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 1.8rem;
+            color: var(--admin-primary);
+            margin-bottom: 4rem;
+            letter-spacing: -1px;
+        }
+
+        .sidebar-logo span { color: white; }
+
+        .nav-items {
+            list-style: none;
+            padding: 0;
+            flex-grow: 1;
+        }
+
+        .nav-item { margin-bottom: 0.8rem; }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 1.1rem 1.4rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-radius: 1rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 600;
+            font-size: 0.95rem;
+            border: 1px solid transparent;
+        }
+
+        .nav-link:hover {
+            background: rgba(0, 102, 255, 0.05);
+            color: white;
+            border-color: rgba(0, 102, 255, 0.2);
+        }
+
+        .nav-link.active {
+            background: linear-gradient(90deg, rgba(0, 102, 255, 0.15), transparent);
+            color: white;
+            border-left: 4px solid var(--admin-primary);
+            box-shadow: inset 10px 0 20px rgba(0, 102, 255, 0.05);
+        }
+
+        .logout-btn {
+            margin-top: auto;
+            color: #ef4444;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            font-weight: 800;
+            padding: 1.2rem 1.4rem;
+            font-size: 0.9rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 1rem;
+            border: 1px solid transparent;
+        }
+
+        .logout-btn:hover { 
+            background: rgba(239, 68, 68, 0.08);
+            transform: translateX(5px);
+            border-color: rgba(239, 68, 68, 0.2);
+            box-shadow: 0 10px 20px rgba(239, 68, 68, 0.05);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            padding: 4rem 5rem;
+            width: calc(100% - 280px);
+            background: radial-gradient(circle at top right, rgba(0, 102, 255, 0.03) 0%, transparent 70%);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4rem;
+        }
+
+        .header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 3rem;
+            font-weight: 800;
+            margin: 0;
+            background: linear-gradient(to bottom, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .stat-card {
+            background: var(--admin-card);
+            backdrop-filter: blur(20px);
+            padding: 2.5rem;
+            border-radius: 2rem;
+            border: 1px solid var(--glass-border);
+            transition: transform 0.3s;
+        }
+        .stat-card:hover { transform: translateY(-5px); border-color: rgba(0, 102, 255, 0.3); }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 0.8rem;
+            letter-spacing: 0.1em;
+        }
+
+        .stat-value {
+            font-size: 3rem;
+            font-weight: 800;
+            font-family: 'Outfit', sans-serif;
+            color: var(--admin-accent);
+            text-shadow: 0 0 30px rgba(0, 242, 255, 0.2);
+        }
+
+        /* Table Styles */
+        .data-card {
+            background: var(--admin-card);
+            backdrop-filter: blur(20px);
+            border-radius: 2rem;
+            padding: 3rem;
+            border: 1px solid var(--glass-border);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            padding: 1.2rem;
+            color: var(--text-muted);
+            font-weight: 800;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        td {
+            padding: 1.5rem 1.2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            font-size: 0.95rem;
+        }
+
+        .action-btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: 0.8rem;
+            border: none;
+            cursor: pointer;
+            font-weight: 800;
+            font-size: 0.8rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-right: 0.5rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-delete { 
+            background: rgba(239, 68, 68, 0.1); 
+            color: #ef4444; 
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+        .btn-delete:hover { 
+            background: #ef4444; 
+            color: white; 
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
+        }
+
+        .hidden { display: none; }
+
+        /* Forms */
+        .admin-form-card {
+            background: var(--admin-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 2rem;
+            padding: 2.5rem;
+            margin-bottom: 3rem;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group-admin {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group-admin label {
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .admin-input {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--glass-border);
+            border-radius: 0.8rem;
+            padding: 0.8rem 1.2rem;
+            color: white;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .admin-input:focus {
+            border-color: var(--admin-primary);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        .btn-submit {
+            background: var(--admin-primary);
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 0.8rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 102, 255, 0.3);
+        }
+
+        .btn-cancel {
+            background: rgba(255,255,255,0.05);
+            color: white;
+            border: 1px solid var(--glass-border);
+            padding: 0.8rem 2rem;
+            border-radius: 0.8rem;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .btn-edit {
+            background: rgba(0, 242, 255, 0.1);
+            color: var(--admin-accent);
+            border: 1px solid rgba(0, 242, 255, 0.2);
+        }
+
+        .btn-edit:hover { background: var(--admin-accent); color: black; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+
+        /* Toast Notifications */
+        #toast-container {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            z-index: 9999;
+        }
+
+        .toast {
+            background: #1e293b;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 1rem;
+            margin-bottom: 1rem;
+            border-left: 5px solid var(--admin-primary);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            animation: slideIn 0.3s ease-out;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            min-width: 300px;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div id="toast-container"></div>
+    <div class="sidebar">
+        <div class="sidebar-logo">Admin<span>Panel</span></div>
+        <ul class="nav-items">
+            <li class="nav-item"><a href="#" class="nav-link active" onclick="showSection('dashboard', this)">Dashboard</a></li>
+            <li class="nav-item"><a href="#" class="nav-link" onclick="showSection('medicines', this)">Medicines</a></li>
+            <li class="nav-item"><a href="#" class="nav-link" onclick="showSection('users', this)">Users</a></li>
+            <li class="nav-item"><a href="#" class="nav-link" onclick="showSection('messages', this)">Messages</a></li>
+        </ul>
+        <a href="index.html" class="logout-btn" onclick="logout()">Logout System</a>
+    </div>
+
+    <div class="main-content">
+        <!-- Dashboard Section -->
+        <section id="dashboard-section">
+            <div class="header">
+                <h1>Platform Activity</h1>
+            </div>
+            <div class="stats-grid" id="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Total Medicines</div>
+                    <div class="stat-value" id="count-meds">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Total Users</div>
+                    <div class="stat-value" id="count-users">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">New Messages</div>
+                    <div class="stat-value" id="count-msgs">0</div>
+                </div>
+            </div>
+
+            <h2 style="font-family:'Outfit'; margin-bottom: 1.5rem;">Quick Management Actions</h2>
+            <div class="stats-grid">
+                <div class="stat-card" style="cursor:pointer; border-left: 4px solid var(--admin-primary);" onclick="showSection('medicines', document.querySelectorAll('.nav-link')[1]);">
+                    <div class="stat-label">Inventory</div>
+                    <h3 style="margin: 0.5rem 0;">Manage Medicines</h3>
+                    <p style="font-size: 0.8rem; color: #94a3b8; margin: 0;">View stock and pricing registry</p>
+                </div>
+                <div class="stat-card" style="cursor:pointer; border-left: 4px solid var(--admin-accent);" onclick="showSection('users', document.querySelectorAll('.nav-link')[2])">
+                    <div class="stat-label">Community</div>
+                    <h3 style="margin: 0.5rem 0;">Manage All Users</h3>
+                    <p style="font-size: 0.8rem; color: #94a3b8; margin: 0;">Review registered profiles</p>
+                </div>
+                <div class="stat-card" style="cursor:pointer; border-left: 4px solid var(--admin-primary);" onclick="showSection('messages', document.querySelectorAll('.nav-link')[3])">
+                    <div class="stat-label">Communication</div>
+                    <h3 style="margin: 0.5rem 0;">Read User Inquiries</h3>
+                    <p style="font-size: 0.8rem; color: #94a3b8; margin: 0;">Respond to clinical queries</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Medicines Section -->
+        <section id="medicines-section" class="hidden">
+            <div class="header">
+                <h1>Manage Medicines</h1>
+                <button class="btn-submit" onclick="showAddForm()">+ Add New Medicine</button>
+            </div>
+
+            <div id="medicine-form-container" class="admin-form-card hidden">
+                <h2 id="form-title" style="margin-bottom: 1.5rem; font-family: 'Outfit';">Add New Medicine</h2>
+                <form id="medicine-form" onsubmit="handleMedicineSubmit(event)">
+                    <input type="hidden" id="med-id">
+                    <div class="form-row">
+                        <div class="form-group-admin">
+                            <label>Medicine Name</label>
+                            <input type="text" id="med-name" class="admin-input" placeholder="e.g. Lipitor" required>
+                        </div>
+                        <div class="form-group-admin">
+                            <label>Scientific Formula</label>
+                            <input type="text" id="med-formula" class="admin-input" placeholder="e.g. Atorvastatin" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group-admin">
+                            <label>Market Price (Rs.)</label>
+                            <input type="number" id="med-price" class="admin-input" placeholder="0.00" required>
+                        </div>
+                        <div class="form-group-admin">
+                            <label>Manufacturer Company</label>
+                            <input type="text" id="med-company" class="admin-input" placeholder="e.g. Pfizer" required>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn-cancel" onclick="hideMedicineForm()">Cancel</button>
+                        <button type="submit" class="btn-submit" id="submit-text">Register Medicine</button>
+                    </div>
+                </form>
+            </div>
+            <div class="data-card">
+                <table id="meds-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Formula</th>
+                            <th>Price</th>
+                            <th>Company</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Users Section -->
+        <section id="users-section" class="hidden">
+            <div class="header">
+                <h1>Manage Users</h1>
+            </div>
+            <div class="data-card">
+                <table id="users-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Full Name</th>
+                            <th>Email</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Messages Section -->
+        <section id="messages-section" class="hidden">
+            <div class="header">
+                <h1>User Inquiries</h1>
+            </div>
+            <div class="data-card">
+                <table id="messages-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Sender</th>
+                            <th>Email</th>
+                            <th>Description</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // API Configuration - Targets backend on 8000 regardless of where frontend is hosted
+        const API_BASE = window.location.port === '8000' ? "" : "http://127.0.0.1:8000";
+
+        // Navigation & UI State Management
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAuth();
+            loadDashboard();
+        });
+
+        function checkAuth() {
+            const adminUser = JSON.parse(localStorage.getItem('adminUser'));
+            if (!adminUser) {
+                window.location.href = 'admin_login.html';
+                return;
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('adminUser');
+            window.location.href = 'admin_login.html';
+        }
+
+        function showSection(sectionId, element = null) {
+            document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
+            const target = document.getElementById(sectionId + '-section');
+            if (target) target.classList.remove('hidden');
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            if (element) element.classList.add('active');
+            if (sectionId === 'medicines') loadMedicines();
+            if (sectionId === 'users') loadUsers();
+            if (sectionId === 'messages') loadMessages();
+            if (sectionId === 'dashboard') loadDashboard();
+        }
+
+        async function loadDashboard() {
+            try {
+                const [meds, users, msgs] = await Promise.all([
+                    fetch(`${API_BASE}/api/medicines/all`).then(r => r.json()).catch(() => []),
+                    fetch(`${API_BASE}/api/admin/users`).then(r => r.json()).catch(() => []),
+                    fetch(`${API_BASE}/api/admin/messages`).then(r => r.json()).catch(() => [])
+                ]);
+                document.getElementById('count-meds').innerText = meds.length || 0;
+                document.getElementById('count-users').innerText = users.length || 0;
+                document.getElementById('count-msgs').innerText = msgs.length || 0;
+            } catch (e) {
+                console.error("Stats Error:", e);
+            }
+        }
+
+        async function loadMedicines() {
+            try {
+                const res = await fetch(`${API_BASE}/api/medicines/all`);
+                const data = await res.json();
+                const tbody = document.querySelector('#meds-table tbody');
+                let html = '';
+                data.forEach(m => {
+                    html += `
+                        <tr>
+                            <td>${m.id}</td>
+                            <td style="font-weight:700;">${m.name}</td>
+                            <td>${m.formula}</td>
+                            <td style="color:var(--admin-primary); font-weight:700;">Rs. ${m.price}</td>
+                            <td>${m.company}</td>
+                            <td>
+                                <button class="action-btn btn-edit" onclick='editMed(${JSON.stringify(m).replace(/'/g, "&apos;")})'>
+                                    <span>✏️</span> Edit
+                                </button>
+                                <button class="action-btn btn-delete" onclick="deleteMed(${m.id})">
+                                    <span>🗑️</span> Delete
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                tbody.innerHTML = html;
+            } catch (e) { showToast('Error loading medicines', 'error'); }
+        }
+
+        async function loadUsers() {
+            try {
+                const res = await fetch(`${API_BASE}/api/admin/users`);
+                const data = await res.json();
+                const tbody = document.querySelector('#users-table tbody');
+                let html = '';
+                data.forEach(u => {
+                    html += `
+                        <tr>
+                            <td>${u.id}</td>
+                            <td>${u.fullname}</td>
+                            <td>${u.email}</td>
+                            <td>
+                                <button class="action-btn btn-delete" onclick="deleteUser(${u.id})">Remove</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                tbody.innerHTML = html;
+            } catch (e) { showToast('Error loading users', 'error'); }
+        }
+
+        async function loadMessages() {
+            try {
+                const res = await fetch(`${API_BASE}/api/admin/messages`);
+                const data = await res.json();
+                const tbody = document.querySelector('#messages-table tbody');
+                let html = '';
+                data.forEach(m => {
+                    html += `
+                        <tr>
+                            <td>${m.id}</td>
+                            <td>${m.name}</td>
+                            <td>${m.email}</td>
+                            <td>${m.description}</td>
+                            <td>${new Date(m.timestamp).toLocaleDateString()}</td>
+                            <td>
+                                <button class="action-btn btn-delete" onclick="deleteMsg(${m.id})">Delete</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                tbody.innerHTML = html;
+            } catch (e) { showToast('Error loading messages', 'error'); }
+        }
+
+        // Action Handlers
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            if(type === 'error') toast.style.borderLeftColor = '#ef4444';
+            toast.innerHTML = `<span>${type === 'error' ? '❌' : '✅'}</span> ${message}`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                toast.style.transition = 'all 0.3s ease-in';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        async function deleteUser(id) {
+            if(confirm('Are you sure you want to remove this user?')) {
+                const res = await fetch(`${API_BASE}/api/admin/users/${id}`, { method: 'DELETE' });
+                if(res.ok) {
+                    showToast('User removed successfully');
+                    loadUsers();
+                    loadDashboard();
+                }
+            }
+        }
+
+        async function deleteMsg(id) {
+            if(confirm('Delete this message?')) {
+                const res = await fetch(`${API_BASE}/api/admin/messages/${id}`, { method: 'DELETE' });
+                if(res.ok) {
+                    showToast('Message deleted');
+                    loadMessages();
+                    loadDashboard();
+                }
+            }
+        }
+
+        async function deleteMed(id) {
+            if(confirm('Delete this medicine?')) {
+                const res = await fetch(`${API_BASE}/api/admin/medicines/${id}`, { method: 'DELETE' });
+                if(res.ok) {
+                    showToast('Medicine removed from inventory');
+                    loadMedicines();
+                    loadDashboard();
+                }
+            }
+        }
+
+        // Medicine Form Handlers
+        function showAddForm() {
+            document.getElementById('medicine-form-container').classList.remove('hidden');
+            document.getElementById('form-title').innerText = "Add New Medicine";
+            document.getElementById('submit-text').innerText = "Register Medicine";
+            document.getElementById('medicine-form').reset();
+            document.getElementById('med-id').value = "";
+            document.getElementById('medicine-form-container').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function hideMedicineForm() {
+            document.getElementById('medicine-form-container').classList.add('hidden');
+        }
+
+        function editMed(med) {
+            document.getElementById('medicine-form-container').classList.remove('hidden');
+            document.getElementById('form-title').innerText = "Update Medicine Info";
+            document.getElementById('submit-text').innerText = "Apply Updates";
+            
+            document.getElementById('med-id').value = med.id;
+            document.getElementById('med-name').value = med.name;
+            document.getElementById('med-formula').value = med.formula;
+            document.getElementById('med-price').value = med.price;
+            document.getElementById('med-company').value = med.company;
+            
+            document.getElementById('medicine-form-container').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        async function handleMedicineSubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById('med-id').value;
+            const payload = {
+                name: document.getElementById('med-name').value,
+                formula: document.getElementById('med-formula').value,
+                price: parseFloat(document.getElementById('med-price').value),
+                company: document.getElementById('med-company').value,
+                alternatives: [] // Default empty for simple admin form
+            };
+
+            const btn = document.getElementById('submit-text');
+            const origText = btn.innerText;
+            btn.innerText = "⏳ Synchronizing...";
+            btn.disabled = true;
+
+            try {
+                const url = id ? `${API_BASE}/api/admin/medicines/${id}` : `${API_BASE}/api/medicines`;
+                const method = id ? 'PUT' : 'POST';
+                
+                const res = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (res.ok) {
+                    showToast(id ? 'Medicine data updated' : 'Medicine added to registry');
+                    hideMedicineForm();
+                    loadMedicines();
+                    loadDashboard();
+                } else {
+                    const err = await res.json();
+                    showToast(err.detail || 'Save failed', 'error');
+                }
+            } catch (err) {
+                showToast('Network error', 'error');
+            } finally {
+                btn.innerText = origText;
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>

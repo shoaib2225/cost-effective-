@@ -107,10 +107,31 @@ def verify_user(email, password):
 def get_all_meds():
     conn = get_db_connection()
     c = conn.cursor()
-    c.execute("SELECT name, formula, price, company FROM medicines ORDER BY name ASC LIMIT 100") 
+    c.execute("SELECT id, name, formula, price, company, alternatives FROM medicines ORDER BY name ASC")
     data = c.fetchall()
     conn.close()
     return [dict(row) for row in data]
+
+def get_all_users():
+    conn = get_db_connection()
+    c = conn.cursor()
+    c.execute("SELECT id, fullname, email FROM users")
+    data = c.fetchall()
+    conn.close()
+    return [dict(row) for row in data]
+
+def delete_user(user_id):
+    conn = get_db_connection()
+    c = conn.cursor()
+    try:
+        c.execute("DELETE FROM users WHERE id=?", (user_id,))
+        conn.commit()
+        return True
+    except Exception as e:
+        print(f"Error deleting user: {e}")
+        return False
+    finally:
+        conn.close()
 
 import pandas as pd
 
@@ -202,6 +223,54 @@ def save_message(name, email, description):
         return True
     except Exception as e:
         print(f"Error saving message: {e}")
+        return False
+    finally:
+        conn.close()
+
+def get_all_messages():
+    conn = get_db_connection()
+    c = conn.cursor()
+    c.execute("SELECT id, name, email, description, timestamp FROM messages ORDER BY timestamp DESC")
+    data = c.fetchall()
+    conn.close()
+    return [dict(row) for row in data]
+
+def delete_message(msg_id):
+    conn = get_db_connection()
+    c = conn.cursor()
+    try:
+        c.execute("DELETE FROM messages WHERE id=?", (msg_id,))
+        conn.commit()
+        return True
+    except Exception as e:
+        print(f"Error deleting message: {e}")
+        return False
+    finally:
+        conn.close()
+
+def update_medicine(med_id, name, formula, price, company, alternatives):
+    conn = get_db_connection()
+    c = conn.cursor()
+    try:
+        c.execute("UPDATE medicines SET name=?, formula=?, price=?, company=?, alternatives=? WHERE id=?",
+                  (name, formula, price, company, json.dumps(alternatives), med_id))
+        conn.commit()
+        return True
+    except Exception as e:
+        print(f"Error updating medicine: {e}")
+        return False
+    finally:
+        conn.close()
+
+def delete_medicine(med_id):
+    conn = get_db_connection()
+    c = conn.cursor()
+    try:
+        c.execute("DELETE FROM medicines WHERE id=?", (med_id,))
+        conn.commit()
+        return True
+    except Exception as e:
+        print(f"Error deleting medicine: {e}")
         return False
     finally:
         conn.close()

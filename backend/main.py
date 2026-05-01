@@ -5,7 +5,11 @@ import uvicorn
 
 # Import separated logic
 from fastapi.middleware.cors import CORSMiddleware
-from database import init_db, create_user, verify_user, search_meds, add_medicine, save_message, get_all_meds
+from database import (
+    init_db, create_user, verify_user, search_meds, add_medicine, save_message, 
+    get_all_meds, get_all_users, delete_user, get_all_messages, delete_message, 
+    update_medicine, delete_medicine
+)
 from models import UserSignup, UserLogin, Medicine, ContactRequest
 from analytics import generate_price_distribution_plot, perform_medicine_clustering, get_interactive_chart_data, get_market_statistics
 
@@ -96,6 +100,48 @@ def get_chart():
 @app.get("/api/analytics/stats")
 def get_stats():
     return get_market_statistics()
+
+# ADMIN PANEL ENDPOINTS
+
+@app.post("/api/admin/login")
+def admin_login(user: UserLogin):
+    # Simple admin check - in a production app this would use a secure methodology
+    if user.email == "admin@gmail.com" and user.password == "admin123":
+        return {"message": "Admin Login successful", "user": {"fullname": "System Administrator", "email": user.email, "is_admin": True}}
+    raise HTTPException(status_code=401, detail="Invalid admin credentials")
+
+@app.get("/api/admin/users")
+def admin_get_users():
+    return get_all_users()
+
+@app.delete("/api/admin/users/{user_id}")
+def admin_delete_user(user_id: int):
+    if delete_user(user_id):
+        return {"message": "User deleted"}
+    raise HTTPException(status_code=500, detail="Failed to delete user")
+
+@app.get("/api/admin/messages")
+def admin_get_messages():
+    return get_all_messages()
+
+@app.delete("/api/admin/messages/{msg_id}")
+def admin_delete_msg(msg_id: int):
+    if delete_message(msg_id):
+        return {"message": "Message deleted"}
+    raise HTTPException(status_code=500, detail="Failed to delete message")
+
+@app.put("/api/admin/medicines/{med_id}")
+def admin_update_med(med_id: int, med: Medicine):
+    alternatives = [alt.model_dump() if hasattr(alt, 'model_dump') else alt.dict() for alt in med.alternatives]
+    if update_medicine(med_id, med.name, med.formula, med.price, med.company, alternatives):
+        return {"message": "Medicine updated"}
+    raise HTTPException(status_code=500, detail="Failed to update medicine")
+
+@app.delete("/api/admin/medicines/{med_id}")
+def admin_delete_med(med_id: int):
+    if delete_medicine(med_id):
+        return {"message": "Medicine deleted"}
+    raise HTTPException(status_code=500, detail="Failed to delete medicine")
 
 # Set the absolute path for frontend to be reliably served
 frontend_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "frontend")
